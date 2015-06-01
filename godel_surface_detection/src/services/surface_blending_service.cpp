@@ -427,6 +427,8 @@ bool SurfaceBlendingService::surface_detection_server_callback(godel_msgs::Surfa
   {
 
   case godel_msgs::SurfaceDetection::Request::PUBLISH_SCAN_PATH:
+    ROS_WARN("PATH EDIT");
+    macro_scanner_.enablePathEditing();
 
     if(req.use_default_parameters)
     {
@@ -441,7 +443,8 @@ bool SurfaceBlendingService::surface_detection_server_callback(godel_msgs::Surfa
     break;
 
   case godel_msgs::SurfaceDetection::Request::SCAN_AND_FIND_ONLY:
-
+    ROS_WARN("NO PATH EDIT");
+    macro_scanner_.disablePathEditing();
     if(req.use_default_parameters)
     {
       robot_scan_.params_ = default_robot_scan_params__;
@@ -474,7 +477,8 @@ bool SurfaceBlendingService::surface_detection_server_callback(godel_msgs::Surfa
     break;
 
   case godel_msgs::SurfaceDetection::Request::FIND_ONLY:
-
+    ROS_WARN("GOTO");
+    robot_scan_.move_to_pose( macro_scanner_.getUserPoses().front() );
     if(req.use_default_parameters)
     {
       surface_detection_.params_ = default_surf_detection_params_;

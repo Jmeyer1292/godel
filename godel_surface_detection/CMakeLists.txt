@@ -8,12 +8,13 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   interactive_markers
-	moveit_ros_move_group
+  moveit_ros_move_group
   moveit_ros_planning_interface
-	tf
-	tf_conversions
-	godel_process_path_generation
-	godel_msgs
+  tf
+  tf_conversions
+  godel_process_path_generation
+  godel_msgs
+  path_editor
 )
 find_package(Boost REQUIRED COMPONENTS system)
 
@@ -40,11 +41,12 @@ include_directories(${godel_surface_detection_INCLUDE_DIRECTORIES})
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME} 
-	src/detection/surface_detection.cpp
+  src/detection/surface_detection.cpp
   src/scan/robot_scan.cpp
-	src/interactive/interactive_surface_server.cpp
+  src/interactive/interactive_surface_server.cpp
   src/scan/profilimeter_scan.cpp
-  src/services/trajectory_library.cpp)
+  src/services/trajectory_library.cpp
+  src/scan/macro_scan.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} yaml-cpp)
 add_dependencies(${PROJECT_NAME} godel_msgs_generate_messages_cpp)

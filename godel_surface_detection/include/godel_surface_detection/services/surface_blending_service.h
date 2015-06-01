@@ -18,6 +18,7 @@
 
 
 #include <godel_surface_detection/scan/robot_scan.h>
+#include <godel_surface_detection/scan/macro_scan.h>
 #include <godel_surface_detection/detection/surface_detection.h>
 #include <godel_surface_detection/interactive/interactive_surface_server.h>
 
@@ -208,6 +209,8 @@ private:
 
   // msgs
   sensor_msgs::PointCloud2 region_cloud_msg_;
+
+  godel_surface_detection::scan::MacroScanManager macro_scanner_;
 
   godel_surface_detection::TrajectoryLibrary trajectory_library_;
 };
