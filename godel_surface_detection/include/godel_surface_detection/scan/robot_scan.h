@@ -61,7 +61,7 @@ public:
 	void get_latest_scan_poses(geometry_msgs::PoseArray &poses);
 	void publish_scan_poses(std::string topic);
 	MoveGroupPtr get_move_group();
-	bool move_to_pose(geometry_msgs::Pose& target_pose);
+        bool move_to_pose(const geometry_msgs::Pose& target_pose);
 	int scan(bool move_only = false);
 
 	static void apply_trajectory_parabolic_time_parameterization(robot_trajectory::RobotTrajectory& rt,

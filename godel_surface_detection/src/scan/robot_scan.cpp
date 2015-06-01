@@ -32,7 +32,7 @@ namespace godel_surface_detection {
 namespace scan {
 
 
-const double RobotScan::PLANNING_TIME = 60.0f;
+const double RobotScan::PLANNING_TIME = 5.0f;
 const double RobotScan::WAIT_MSG_DURATION = 5.0f;
 const double RobotScan::MIN_TRAJECTORY_TIME_STEP = 0.8f; // seconds
 const double RobotScan::EEF_STEP = 0.05f; // 5cm
@@ -66,7 +66,7 @@ bool RobotScan::init()
 	move_group_ptr_->setEndEffectorLink(params_.tcp_frame);
 	move_group_ptr_->setPoseReferenceFrame(params_.world_frame);
 	move_group_ptr_->setPlanningTime(PLANNING_TIME);
-	move_group_ptr_->setPlannerId("RRTstarkConfigDefault");
+//	move_group_ptr_->setPlannerId("RRTstarkConfigDefault");
 	tf_listener_ptr_ = TransformListenerPtr(new tf::TransformListener());
 	scan_traj_poses_.clear();
 	callback_list_.clear();
@@ -134,7 +134,7 @@ void RobotScan::publish_scan_poses(std::string topic)
 	ros::Duration(1.0f).sleep();
 }
 
-bool RobotScan::move_to_pose(geometry_msgs::Pose& target_pose)
+bool RobotScan::move_to_pose(const geometry_msgs::Pose& target_pose)
 {
 	move_group_ptr_->setPoseTarget(target_pose,params_.tcp_frame);
 	return move_group_ptr_->move();
