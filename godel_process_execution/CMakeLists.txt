@@ -103,36 +103,30 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(abb_blend_process_service_node src/abb_blend_process_service_node.cpp src/abb_blend_process_service.cpp)
-add_executable(abb_keyence_process_service_node src/abb_keyence_process_service_node.cpp src/abb_keyence_process_service.cpp)
 add_executable(motoman_blend_process_service_node src/motoman_blend_process_service_node.cpp src/motoman_blend_process_service.cpp)
-add_executable(motoman_keyence_process_service_node src/motoman_keyence_process_service_node.cpp src/motoman_keyence_process_service.cpp)
+add_executable(keyence_process_service_node src/keyence_process_service_node.cpp src/keyence_process_service.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(godel_process_execution_node godel_process_execution_generate_messages_cpp)
 add_dependencies(abb_blend_process_service_node godel_msgs_generate_messages_cpp)
 add_dependencies(abb_blend_process_service_node simulator_service_generate_messages_cpp)
-add_dependencies(abb_keyence_process_service_node godel_msgs_generate_messages_cpp)
-add_dependencies(abb_keyence_process_service_node simulator_service_generate_messages_cpp)
 add_dependencies(motoman_blend_process_service_node godel_msgs_generate_messages_cpp)
 add_dependencies(motoman_blend_process_service_node simulator_service_generate_messages_cpp)
-add_dependencies(motoman_keyence_process_service_node godel_msgs_generate_messages_cpp)
-add_dependencies(motoman_keyence_process_service_node simulator_service_generate_messages_cpp)
+add_dependencies(keyence_process_service_node godel_msgs_generate_messages_cpp)
+add_dependencies(keyence_process_service_node simulator_service_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(abb_blend_process_service_node
    ${catkin_LIBRARIES}
  )
 
-  target_link_libraries(abb_keyence_process_service_node
-   ${catkin_LIBRARIES}
- )
 
   target_link_libraries(motoman_blend_process_service_node
    ${catkin_LIBRARIES}
  )
 
-  target_link_libraries(motoman_keyence_process_service_node
+  target_link_libraries(keyence_process_service_node
    ${catkin_LIBRARIES}
  )
 

@@ -1,5 +1,5 @@
-#ifndef PATH_EXECUTION_SERVICE_H
-#define PATH_EXECUTION_SERVICE_H
+#ifndef KEYENCE_PROCESS_SERVICE_H
+#define KEYENCE_PROCESS_SERVICE_H
 
 #include <ros/ros.h>
 #include <godel_msgs/KeyenceProcessExecution.h>
@@ -7,10 +7,10 @@
 namespace godel_process_execution
 {
 
-class ProcessExecutionService
+class KeyenceProcessExecutionService
 {
 public:
-  ProcessExecutionService(const std::string& name, const std::string& sim_name, 
+  KeyenceProcessExecutionService(const std::string& name, const std::string& sim_name, 
                        const std::string& real_name, ros::NodeHandle& nh);
 
   /**
@@ -29,4 +29,4 @@ private:
 
 }
 
-#endif // PATH_EXECUTION_SERVICE_H
+#endif // KEYENCE_PROCESS_SERVICE_H

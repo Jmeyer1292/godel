@@ -3,7 +3,7 @@
 #include <simulator_service/SimulateTrajectory.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
-godel_process_execution::ProcessExecutionService::ProcessExecutionService(const std::string& name, 
+godel_process_execution::MotomanBlendProcessExecutionService::MotomanBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
                                                                           const std::string& real_name,
                                                                           ros::NodeHandle& nh)
@@ -14,13 +14,13 @@ godel_process_execution::ProcessExecutionService::ProcessExecutionService(const 
 
   sim_client_ = nh.serviceClient<simulator_service::SimulateTrajectory>(sim_name);
 
-  server_ = nh.advertiseService<ProcessExecutionService,
+  server_ = nh.advertiseService<MotomanBlendProcessExecutionService,
                                 godel_msgs::BlendProcessExecution::Request,
                                 godel_msgs::BlendProcessExecution::Response>
-            (name, &godel_process_execution::ProcessExecutionService::executionCallback, this);
+            (name, &godel_process_execution::MotomanBlendProcessExecutionService::executionCallback, this);
 }
 
-bool godel_process_execution::ProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
+bool godel_process_execution::MotomanBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
                                                                          godel_msgs::BlendProcessExecution::Response& res)
 {
   using moveit_msgs::ExecuteKnownTrajectory;

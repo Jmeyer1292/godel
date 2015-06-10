@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   nh.param<std::string>("actual_execution_service", real_name, "execute_kinematic_path");
   nh.param<std::string>("simulated_execution_service", sim_name, "simulation/simulate");
 
-  godel_process_execution::ProcessExecutionService path_executor("abb_blend_process_execution", sim_name, real_name, nh);
+  godel_process_execution::AbbBlendProcessExecutionService process_exector("abb_blend_process_execution", sim_name, real_name, nh);
 
   ros::spin();
   return 0;
