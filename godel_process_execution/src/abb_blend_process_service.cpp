@@ -3,6 +3,8 @@
 #include <simulator_service/SimulateTrajectory.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
+#include "process_utils.h"
+
 godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
                                                                           const std::string& real_name,
@@ -28,38 +30,21 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
 
   if (req.simulate)
   {
+    trajectory_msgs::JointTrajectory aggregate_traj;
+    aggregate_traj = req.trajectory_approach;
+    appendTrajectory(aggregate_traj, req.trajectory_process);
+    appendTrajectory(aggregate_traj, req.trajectory_depart);
     // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_approach;
-    srv_approach.request.wait_for_execution = req.wait_for_execution;
-    srv_approach.request.trajectory = req.trajectory_approach;
+    SimulateTrajectory srv;
+    srv.request.wait_for_execution = false;
+    srv.request.trajectory = aggregate_traj;
 
-    // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_process;
-    srv_process.request.wait_for_execution = req.wait_for_execution;
-    srv_process.request.trajectory = req.trajectory_process;
-
-    // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_depart;
-    srv_depart.request.wait_for_execution = req.wait_for_execution;
-    srv_depart.request.trajectory = req.trajectory_depart;
-
-    if (!sim_client_.call(srv_approach))
-    {
-      // currently no response fields in the simulate header
-      return false;
-    }
-    if (!sim_client_.call(srv_process))
-    {
-      // currently no response fields in the simulate header
-      return false;
-    }
-    if (!sim_client_.call(srv_depart))
+    if (!sim_client_.call(srv))
     {
       // currently no response fields in the simulate header
       return false;
     }
     return true;
-    ROS_WARN_STREAM("PathExecutionService: Failed to call simulation service");
   }
   else
   {

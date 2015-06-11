@@ -8,12 +8,13 @@ int main(int argc, char** argv)
 
   ros::NodeHandle nh;
 
-  std::string real_name, sim_name;
+  std::string real_name, sim_name, server_name;
 
   nh.param<std::string>("actual_execution_service", real_name, "execute_kinematic_path");
   nh.param<std::string>("simulated_execution_service", sim_name, "simulation/simulate");
+  nh.param<std::string>("server_name", server_name, "blend_process_execution");
 
-  godel_process_execution::AbbBlendProcessExecutionService process_exector("abb_blend_process_execution", sim_name, real_name, nh);
+  godel_process_execution::AbbBlendProcessExecutionService process ("blend_process_execution", sim_name, real_name, nh);
 
   ros::spin();
   return 0;

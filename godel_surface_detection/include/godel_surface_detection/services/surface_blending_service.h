@@ -175,7 +175,14 @@ private:
   // Services subscribed to by this class
   ros::ServiceClient visualize_process_path_client_;
   ros::ServiceClient trajectory_planner_client_;
-  ros::ServiceClient trajectory_execution_client_;
+
+
+//  ros::ServiceClient trajectory_execution_client_;
+  // Process Execution service clients
+  ros::ServiceClient blend_process_client_;
+  ros::ServiceClient scan_process_client_;
+  
+
   // Current state publishers
   ros::Publisher selected_surf_changed_pub_;
   ros::Publisher point_cloud_pub_;

@@ -64,6 +64,10 @@
 	<!-- This node provides interfaces to trajectory execution for simulated and real robots  -->
 	<node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node" output="screen" />
 
+	<!-- Process execution nodes -->
+	<node name="blend_process_execution" pkg="godel_process_execution" type="abb_blend_process_service_node" output="screen" />
+	<node name="scan_process_execution" pkg="godel_process_execution" type="keyence_process_service_node" output="screen" />
+
 	<!-- Bring up simulated robot that can be visualized under the tf namespace 'simulation'
 			 Allows for previewing paths generated before execution. -->
 	<include if="$(arg preview_motion)" file="$(find simulator_service)/launch/simulation.launch"/>

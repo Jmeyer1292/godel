@@ -1,5 +1,7 @@
 int32 BLEND_TYPE=0
 int32 SCAN_TYPE=1
 
-trajectory_msgs/JointTrajectory trajectory
+trajectory_msgs/JointTrajectory trajectory_approach
+trajectory_msgs/JointTrajectory trajectory_process
+trajectory_msgs/JointTrajectory trajectory_depart
 int32 type
