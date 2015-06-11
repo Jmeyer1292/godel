@@ -39,3 +39,37 @@ void godel_path_planning::populateTrajectoryMsg(const TrajectoryVec& solution,
   }
   return;
 }
+
+void godel_path_planning::populateProcessTrajectories(const TrajectoryVec& entire_path,
+                                                      const descartes_core::RobotModel& robot_model,
+                                                      const std::string& frame_id,
+                                                      const std::vector<std::string>& joint_names,
+                                                      size_t blend_start_idx,
+                                                      size_t blend_stop_idx,
+                                                      trajectory_msgs::JointTrajectory& approach,
+                                                      trajectory_msgs::JointTrajectory& process,
+                                                      trajectory_msgs::JointTrajectory& depart)
+{
+  approach.header.frame_id = frame_id;
+  process.header.frame_id = frame_id;
+  depart.header.frame_id = frame_id;
+
+  approach.header.stamp = ros::Time::now();
+  process.header.stamp = ros::Time::now();
+  depart.header.stamp = ros::Time::now();
+
+  approach.joint_names = joint_names;
+  process.joint_names = joint_names;
+  depart.joint_names = joint_names;
+
+  TrajectoryVec segment;
+  
+  segment.assign(entire_path.begin(), entire_path.begin() + blend_start_idx);
+  populateTrajectoryMsg(segment, robot_model, approach);
+
+  segment.assign(entire_path.begin() + blend_start_idx, entire_path.begin() + blend_stop_idx);
+  populateTrajectoryMsg(segment, robot_model, process);
+
+  segment.assign(entire_path.begin() + blend_stop_idx, entire_path.end());
+  populateTrajectoryMsg(segment, robot_model, depart);
+}

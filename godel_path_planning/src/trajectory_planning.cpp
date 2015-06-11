@@ -134,7 +134,7 @@ namespace
 } // end of anon namespace
 
 bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlanning::Request& req,
-                                             trajectory_msgs::JointTrajectory& trajectory,
+                                             godel_msgs::TrajectoryPlanning::Response& res,
                                              const moveit::core::RobotModelConstPtr& model,
                                              const std::string& ik_plugin)
 {
@@ -255,13 +255,23 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
   const std::vector< std::string >& joint_names = 
     model->getJointModelGroup(req.group_name)->getActiveJointModelNames(); 
 
-  // trajectory header: 
-  trajectory.header.stamp = ros::Time::now();
-  trajectory.header.frame_id = req.world_frame;
-  // fill in joint names (order matters) - might need to check
-  trajectory.joint_names = joint_names;
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // Populate the ROS joint trajectories for all three trajectories inside the 'process' //
+  /////////////////////////////////////////////////////////////////////////////////////////
 
-  populateTrajectoryMsg(traj, *robot_model, trajectory);
+  // trajectory header: 
+  // res.trajectory_process.header.stamp = ros::Time::now();
+  // res.trajectory_process.header.frame_id = req.world_frame;
+  // // fill in joint names (order matters) - might need to check
+  // res.trajectory_process.joint_names = joint_names;
+
+  // populateTrajectoryMsg(traj, *robot_model, res.trajectory_process);
+
+  populateProcessTrajectories(traj, *robot_model, req.world_frame, joint_names, 
+                              nPointsInGoto, traj.size(), 
+                              res.trajectory_approach,
+                              res.trajectory_process,
+                              res.trajectory_depart);
 
   return true;
 }

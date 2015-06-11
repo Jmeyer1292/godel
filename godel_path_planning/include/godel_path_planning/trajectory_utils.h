@@ -39,6 +39,16 @@ namespace godel_path_planning
   void populateTrajectoryMsg(const TrajectoryVec& solution,
                              const descartes_core::RobotModel& robot_model,
                              trajectory_msgs::JointTrajectory& trajectory);
+
+  void populateProcessTrajectories(const TrajectoryVec& entire_path,
+                                   const descartes_core::RobotModel& robot_model,
+                                   const std::string& frame_id,
+                                   const std::vector<std::string>& joint_names,
+                                   size_t blend_start_idx,
+                                   size_t blend_stop_idx,
+                                   trajectory_msgs::JointTrajectory& approach,
+                                   trajectory_msgs::JointTrajectory& process,
+                                   trajectory_msgs::JointTrajectory& depart);
   
 
 }

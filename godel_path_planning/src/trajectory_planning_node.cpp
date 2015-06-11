@@ -35,7 +35,7 @@ bool trajectory_planning_callback(godel_msgs::TrajectoryPlanning::Request& req,
                                   const moveit::core::RobotModelConstPtr& model,
                                   const std::string& ik_plugin)
 {
-  return godel_path_planning::generateTrajectory(req, res.trajectory, model, ik_plugin);
+  return godel_path_planning::generateTrajectory(req, res, model, ik_plugin);
 }
 
 int main(int argc, char **argv)

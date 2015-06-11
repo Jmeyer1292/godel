@@ -7,7 +7,7 @@
 namespace godel_path_planning
 {
   bool generateTrajectory(const godel_msgs::TrajectoryPlanning::Request& req, 
-                          trajectory_msgs::JointTrajectory& trajectory,
+                          godel_msgs::TrajectoryPlanning::Response& res,
                           const moveit::core::RobotModelConstPtr& model,
                           const std::string& ik_plugin);
 }
