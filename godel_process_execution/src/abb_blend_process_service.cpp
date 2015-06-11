@@ -3,7 +3,10 @@
 #include <simulator_service/SimulateTrajectory.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
+#include <fstream>
+
 #include "process_utils.h"
+#include "rapid_emitter.h"
 
 godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
@@ -27,14 +30,15 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
 {
   using moveit_msgs::ExecuteKnownTrajectory;
   using simulator_service::SimulateTrajectory;
+  
+  trajectory_msgs::JointTrajectory aggregate_traj;
+  aggregate_traj = req.trajectory_approach;
+  appendTrajectory(aggregate_traj, req.trajectory_process);
+  appendTrajectory(aggregate_traj, req.trajectory_depart);
+  // Pass the trajectory to the simulation service
 
   if (req.simulate)
   {
-    trajectory_msgs::JointTrajectory aggregate_traj;
-    aggregate_traj = req.trajectory_approach;
-    appendTrajectory(aggregate_traj, req.trajectory_process);
-    appendTrajectory(aggregate_traj, req.trajectory_depart);
-    // Pass the trajectory to the simulation service
     SimulateTrajectory srv;
     srv.request.wait_for_execution = false;
     srv.request.trajectory = aggregate_traj;
@@ -49,6 +53,38 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
   else
   {
     //ABB Rapid Emmiter
+    std::vector<rapid_emitter::TrajectoryPt> pts;
+    for (std::size_t i = 0; i < aggregate_traj.points.size(); ++i)
+    {
+      std::vector<double> values;
+      for (std::size_t j = 0; j < aggregate_traj.points[i].positions.size(); ++j)
+      {
+        values.push_back(aggregate_traj.points[i].positions[j] * 180.0 / M_PI);
+      }
+
+      rapid_emitter::TrajectoryPt rapid_point (values);
+      pts.push_back(rapid_point);
+    }
+
+    // Correct for 2400 linkage
+    for (std::size_t i = 0; i < pts.size(); ++i)
+    {
+      pts[i].positions_[2] += pts[i].positions_[1];
+    }
+
+    rapid_emitter::ProcessParams params;
+    params.spindle_speed = 1.0;
+    params.tcp_speed = 200;
+    params.wolf = false;
+    params.slide_force = 0.0;
+    params.output_name = "do_PIO_8"; 
+    
+    std::ofstream fp ("blend.mod");
+    if (!fp) ROS_ERROR("PROCESS_PATH_PLANNING: Could not open file");
+
+    rapid_emitter::emitRapidFile(fp, pts, req.trajectory_approach.points.size(), pts.size(), params);
+    return true;
+    
   }
 
 

@@ -102,7 +102,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(abb_blend_process_service_node src/abb_blend_process_service_node.cpp src/abb_blend_process_service.cpp)
+add_executable(abb_blend_process_service_node src/abb_blend_process_service_node.cpp src/abb_blend_process_service.cpp src/rapid_emitter.cpp)
 add_executable(motoman_blend_process_service_node src/motoman_blend_process_service_node.cpp src/motoman_blend_process_service.cpp)
 add_executable(keyence_process_service_node src/keyence_process_service_node.cpp src/keyence_process_service.cpp)
 
