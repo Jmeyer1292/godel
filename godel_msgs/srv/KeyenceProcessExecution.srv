@@ -9,6 +9,9 @@ bool wait_for_execution
 # Use the simulated robot or the actual robot
 bool simulate
 
+# Parameters associated with the Keyence Process
+godel_msgs/ScanPlanParameters params
+
 ---
 
 # Return code

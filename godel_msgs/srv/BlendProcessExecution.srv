@@ -9,7 +9,9 @@ bool wait_for_execution
 # Use the simulated robot or the actual robot
 bool simulate
 
----
+# Process parameters
+godel_msgs/BlendingPlanParameters params
 
+---
 # Return code
 int32 code
