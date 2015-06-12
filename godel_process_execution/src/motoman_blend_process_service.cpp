@@ -6,6 +6,8 @@
 #include "process_utils.h"
 #include <boost/thread.hpp>
 
+#include <ros/topic.h>
+
 godel_process_execution::MotomanBlendProcessExecutionService::MotomanBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
                                                                           const std::string& real_name,
@@ -21,6 +23,7 @@ godel_process_execution::MotomanBlendProcessExecutionService::MotomanBlendProces
                                 godel_msgs::BlendProcessExecution::Request,
                                 godel_msgs::BlendProcessExecution::Response>
             (name, &godel_process_execution::MotomanBlendProcessExecutionService::executionCallback, this);
+
   real_client_ = nh.serviceClient<godel_msgs::TrajectoryExecution>("path_execution");
 
 }
@@ -51,7 +54,6 @@ bool godel_process_execution::MotomanBlendProcessExecutionService::executionCall
   }
   else
   {
-    ROS_WARN_STREAM("Executing motoman blend trajectory");
     boost::thread(&godel_process_execution::MotomanBlendProcessExecutionService::executeProcess, this, req);
     return true;
   }
@@ -62,7 +64,6 @@ bool godel_process_execution::MotomanBlendProcessExecutionService::executionCall
 
 void godel_process_execution::MotomanBlendProcessExecutionService::executeProcess(godel_msgs::BlendProcessExecution::Request req)
 {
-  ROS_WARN_STREAM("Executing motoman blend trajectory (2)");
   godel_msgs::TrajectoryExecution srv_approach;
   srv_approach.request.wait_for_execution = true;
   srv_approach.request.trajectory = req.trajectory_approach;
@@ -100,10 +101,9 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
   fixed_traj.joint_names = req.trajectory_process.joint_names;
   fixed_traj.header = req.trajectory_process.header;
 
-  // for (std::size_t i = 0; i < )
-
   fixed_traj.points.push_back(pt);
   appendTrajectory(fixed_traj, req.trajectory_process);
+  srv_process.request.trajectory = fixed_traj;
 
   //////////////
   // End hack //
