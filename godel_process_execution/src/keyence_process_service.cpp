@@ -93,7 +93,7 @@ void godel_process_execution::KeyenceProcessExecutionService::executeProcess(god
 
   // Turn on sensor
   keyence_driver::ChangeProgram keyence_srv;
-  keyence_srv.request.program_no = 3;
+  keyence_srv.request.program_no = 4;
 
   if (!keyence_client_.call(keyence_srv))
   {
