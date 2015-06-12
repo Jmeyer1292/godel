@@ -8,6 +8,7 @@ godel_path_execution::PathExecutionService::PathExecutionService(const std::stri
                                                                  const std::string& real_name,
                                                                  ros::NodeHandle& nh)
   : name_(name)
+  , ac_("joint_trajectory_action", true)
 {
   ROS_INFO_STREAM("Starting path execution service with name " << name << ". Using simulation service '" 
     << sim_name << "' and actual execution service: '" << real_name << "'.");
@@ -32,31 +33,47 @@ bool godel_path_execution::PathExecutionService::executionCallback(godel_msgs::T
 
   if (req.simulate)
   {
-    // Pass the trajectory to the simulation service
-    SimulateTrajectory srv;
-    srv.request.wait_for_execution = req.wait_for_execution;
-    srv.request.trajectory = req.trajectory;
+    // // Pass the trajectory to the simulation service
+    // SimulateTrajectory srv;
+    // srv.request.wait_for_execution = req.wait_for_execution;
+    // srv.request.trajectory = req.trajectory;
 
-    if (sim_client_.call(srv))
-    {
-      // currently no response fields in the simulate header
-      return true;
-    }
-    ROS_WARN_STREAM("PathExecutionService: Failed to call simulation service");
+    // if (sim_client_.call(srv))
+    // {
+    //   // currently no response fields in the simulate header
+    //   return true;
+    // }
+    // ROS_WARN_STREAM("PathExecutionService: Failed to call simulation service");
   }
   else
   {
     // Pass the trajectory to moveit
-    ExecuteKnownTrajectory srv;
-    srv.request.wait_for_execution = req.wait_for_execution;
-    srv.request.trajectory.joint_trajectory = req.trajectory;
+    // ExecuteKnownTrajectory srv;
+    // srv.request.wait_for_execution = req.wait_for_execution;
+    // srv.request.trajectory.joint_trajectory = req.trajectory;
 
-    if (real_client_.call(srv))
+    // if (real_client_.call(srv))
+    // {
+    //   res.code = srv.response.error_code.val;
+    //   return true;
+    // }
+    // ROS_WARN_STREAM("PathExecutionService: Failed to call hardware execution service");
+    if (!ac_.waitForServer(ros::Duration(2.0)))
     {
-      res.code = srv.response.error_code.val;
-      return true;
+      ROS_ERROR_STREAM("Could not connect to action server");
+      return false;
     }
-    ROS_WARN_STREAM("PathExecutionService: Failed to call hardware execution service");
+
+    control_msgs::FollowJointTrajectoryGoal goal;
+    goal.trajectory = req.trajectory;
+    ROS_WARN_STREAM("Sending action server goal");
+    ac_.sendGoal(goal);
+
+    if (req.wait_for_execution && ac_.waitForResult(goal.trajectory.points[goal.trajectory.points.size()-1].time_from_start))
+    {
+      ROS_INFO_STREAM("Action server reported successful execution");
+    }
+    return true;
   }
 
   return false;

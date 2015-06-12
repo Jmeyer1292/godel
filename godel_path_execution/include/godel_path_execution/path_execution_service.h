@@ -3,6 +3,9 @@
 
 #include <ros/ros.h>
 #include <godel_msgs/TrajectoryExecution.h>
+#include <actionlib/client/simple_action_client.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
+
 
 namespace godel_path_execution
 {
@@ -25,6 +28,7 @@ private:
   ros::ServiceClient real_client_;
   ros::ServiceClient sim_client_;
   std::string name_;
+  actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> ac_;
 };
 
 }

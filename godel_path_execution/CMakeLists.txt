@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   roscpp
   simulator_service
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
