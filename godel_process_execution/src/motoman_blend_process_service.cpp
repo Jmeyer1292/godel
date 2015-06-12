@@ -1,7 +1,10 @@
 #include <godel_process_execution/motoman_blend_process_service.h>
 
 #include <simulator_service/SimulateTrajectory.h>
-#include <moveit_msgs/ExecuteKnownTrajectory.h>
+#include <godel_msgs/TrajectoryExecution.h>
+
+#include "process_utils.h"
+#include <boost/thread.hpp>
 
 godel_process_execution::MotomanBlendProcessExecutionService::MotomanBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
@@ -18,82 +21,109 @@ godel_process_execution::MotomanBlendProcessExecutionService::MotomanBlendProces
                                 godel_msgs::BlendProcessExecution::Request,
                                 godel_msgs::BlendProcessExecution::Response>
             (name, &godel_process_execution::MotomanBlendProcessExecutionService::executionCallback, this);
+  real_client_ = nh.serviceClient<godel_msgs::TrajectoryExecution>("path_execution");
+
 }
 
 bool godel_process_execution::MotomanBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
                                                                          godel_msgs::BlendProcessExecution::Response& res)
 {
-  using moveit_msgs::ExecuteKnownTrajectory;
   using simulator_service::SimulateTrajectory;
 
   if (req.simulate)
   {
     // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_approach;
-    srv_approach.request.wait_for_execution = req.wait_for_execution;
-    srv_approach.request.trajectory = req.trajectory_approach;
-
+    trajectory_msgs::JointTrajectory aggregate_traj;
+    aggregate_traj = req.trajectory_approach;
+    appendTrajectory(aggregate_traj, req.trajectory_process);
+    appendTrajectory(aggregate_traj, req.trajectory_depart);
     // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_process;
-    srv_process.request.wait_for_execution = req.wait_for_execution;
-    srv_process.request.trajectory = req.trajectory_process;
+    SimulateTrajectory srv;
+    srv.request.wait_for_execution = false;
+    srv.request.trajectory = aggregate_traj;
 
-    // Pass the trajectory to the simulation service
-    SimulateTrajectory srv_depart;
-    srv_depart.request.wait_for_execution = req.wait_for_execution;
-    srv_depart.request.trajectory = req.trajectory_depart;
-
-    if (!sim_client_.call(srv_approach))
+    if (!sim_client_.call(srv))
     {
       // currently no response fields in the simulate header
       return false;
     }
-    if (!sim_client_.call(srv_process))
-    {
-      // currently no response fields in the simulate header
-      return false;
-    }
-    if (!sim_client_.call(srv_depart))
-    {
-      // currently no response fields in the simulate header
-      return false;
-    }
-    return true;
-    ROS_WARN_STREAM("PathExecutionService: Failed to call simulation service");
+    return true;    
   }
   else
   {
-    ExecuteKnownTrajectory srv_approach;
-    srv_approach.request.wait_for_execution = req.wait_for_execution;
-    srv_approach.request.trajectory.joint_trajectory = req.trajectory_approach;
-
-    ExecuteKnownTrajectory srv_process;
-    srv_process.request.wait_for_execution = req.wait_for_execution;
-    srv_process.request.trajectory.joint_trajectory = req.trajectory_process;
-
-    ExecuteKnownTrajectory srv_depart;
-    srv_depart.request.wait_for_execution = req.wait_for_execution;
-    srv_depart.request.trajectory.joint_trajectory = req.trajectory_depart;
-
-    if (!real_client_.call(srv_approach))
-    {
-      res.code = srv_approach.response.error_code.val;
-      return false;
-    }
-    if (!real_client_.call(srv_process))
-    {
-      res.code = srv_process.response.error_code.val;
-      return false;
-    }
-    if (!real_client_.call(srv_depart))
-    {
-      res.code = srv_depart.response.error_code.val;
-      return false;
-    }
+    ROS_WARN_STREAM("Executing motoman blend trajectory");
+    boost::thread(&godel_process_execution::MotomanBlendProcessExecutionService::executeProcess, this, req);
     return true;
-    ROS_WARN_STREAM("PathExecutionService: Failed to call hardware execution service");
   }
 
 
   return false;
+}
+
+void godel_process_execution::MotomanBlendProcessExecutionService::executeProcess(godel_msgs::BlendProcessExecution::Request req)
+{
+  ROS_WARN_STREAM("Executing motoman blend trajectory (2)");
+  godel_msgs::TrajectoryExecution srv_approach;
+  srv_approach.request.wait_for_execution = true;
+  srv_approach.request.trajectory = req.trajectory_approach;
+
+  godel_msgs::TrajectoryExecution srv_process;
+  srv_process.request.wait_for_execution = true;
+  srv_process.request.trajectory = req.trajectory_process;
+
+  godel_msgs::TrajectoryExecution srv_depart;
+  srv_depart.request.wait_for_execution = true;
+  srv_depart.request.trajectory = req.trajectory_depart;
+
+  if (!real_client_.call(srv_approach))
+  {
+    // res.code = srv_approach.response.error_code.val;
+    return;
+  }
+
+  ////////////////////////////////////
+  // Capture current robot position //
+  ////////////////////////////////////
+  ros::Duration(1.5).sleep();
+  sensor_msgs::JointStateConstPtr state = ros::topic::waitForMessage<sensor_msgs::JointState>("joint_states", ros::Duration(1.0));
+  if (!state) ROS_ERROR_STREAM("Could not capture joints");
+
+  trajectory_msgs::JointTrajectoryPoint pt;
+  pt.positions = state->position;
+  std::vector<double> dummy (state->position.size(), 0.0);
+  pt.velocities = dummy;
+  pt.accelerations = dummy;
+  pt.effort = dummy;
+  pt.time_from_start = ros::Duration(0.5);
+  
+  trajectory_msgs::JointTrajectory fixed_traj;
+  fixed_traj.joint_names = req.trajectory_process.joint_names;
+  fixed_traj.header = req.trajectory_process.header;
+
+  // for (std::size_t i = 0; i < )
+
+  fixed_traj.points.push_back(pt);
+  appendTrajectory(fixed_traj, req.trajectory_process);
+
+  //////////////
+  // End hack //
+  //////////////
+
+  if (!real_client_.call(srv_process))
+  {
+    // res.code = srv_process.response.error_code.val;
+    return ;
+  }
+
+  // Capture current robot position
+  ros::Duration(1.5).sleep();
+  srv_depart.request.trajectory = insertCurrentPosition(req.trajectory_depart);
+
+  if (!real_client_.call(srv_depart))
+  {
+    // res.code = srv_depart.response.error_code.val;
+    return;
+  }
+
+  ROS_WARN_STREAM("Executing motoman blend trajectory (3)");
 }

@@ -20,6 +20,8 @@ public:
    */
   bool executionCallback(godel_msgs::BlendProcessExecution::Request& req,
                          godel_msgs::BlendProcessExecution::Response& res);
+
+  void executeProcess(godel_msgs::BlendProcessExecution::Request req);
 private:
   ros::ServiceServer server_;
   ros::ServiceClient real_client_;

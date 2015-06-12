@@ -20,10 +20,14 @@ public:
    */
   bool executionCallback(godel_msgs::KeyenceProcessExecution::Request& req,
                          godel_msgs::KeyenceProcessExecution::Response& res);
+
+  void executeProcess(godel_msgs::KeyenceProcessExecution::Request& req);
+
 private:
   ros::ServiceServer server_;
   ros::ServiceClient real_client_;
   ros::ServiceClient sim_client_;
+  ros::ServiceClient keyence_client_;
   std::string name_;
 };
 
