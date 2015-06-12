@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Bring up the MoveIt interface to the real or simulated robot -->
+	<include file="$(find godel_surface_detection)/launch/sia20d_blending.launch">
+		<arg name="sim_robot" value="false"/>
+		<arg name="robot_ip" value="192.168.32.6"/>
+		<arg name="sim_sensor" value="false"/>
+	</include>
+
+	<include file="$(find godel_surface_detection)/launch/sia20d_sensor_setup.launch"/>
+
+	<node name="keyence_driver" pkg="keyence_driver" type="keyence_driver_node" output="screen">
+		<param name="controller_ip" value="192.168.32.50" />
+		<param name="head_a_model" value="true" />
+	</node>
+
+	<node name="scan_analysis" pkg="godel_scan_analysis" type="godel_scan_analysis_node" output="screen">
+	</node>
+
+</launch>
