@@ -2,7 +2,7 @@ frame_id: world_frame
 point_cloud_descriptions:
   - x: 1.1
     y: 0.0
-    z: 0.02
+    z: 0.00
     rx: 0.0
     ry: 0.0
     rz: 0.0
