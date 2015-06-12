@@ -49,6 +49,7 @@ namespace simulator_service
       ac_.sendGoal(goal);
       ac_.waitForResult(ros::Duration(0.5));
       // Then send the whole trajectory
+      req.trajectory.points.resize(req.trajectory.points.size() - 1);
       goal.trajectory = req.trajectory;
       ac_.sendGoal(goal);
 

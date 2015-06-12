@@ -62,7 +62,7 @@
 		<!-- <param name="ik_plugin" value="descartes_moveit/MoveitStateAdapter"/> -->
 	</node>
 
-	<node name="blend_process_execution" pkg="godel_process_execution" type="motoman_blend_process_service_node" output="screen" launch-prefix="xterm -e gdb --args" />
+	<node name="blend_process_execution" pkg="godel_process_execution" type="motoman_blend_process_service_node" output="screen" />
 	<node name="scan_process_execution" pkg="godel_process_execution" type="keyence_process_service_node" output="screen" />
 
 	<!-- This node provides interfaces to trajectory execution for simulated and real robots  -->

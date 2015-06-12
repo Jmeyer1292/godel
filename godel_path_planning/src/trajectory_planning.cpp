@@ -97,7 +97,7 @@ namespace
   double timeParamiterize(const std::vector<double>& start,
                           const std::vector<double>& stop)
   {
-    const static std::vector<double> vel {0.2, 0.2, 0.2, 0.2, 0.3, 0.3, 0.3};
+    const static std::vector<double> vel {0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4};
 
     double max_time = 0.0;
     for (std::size_t i = 0; i < start.size(); ++i)
@@ -267,17 +267,17 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
     (it + 1)->get()->setTiming(tm);
   }
 
-  // // Attempt to smooth the velocity of the robot
-  // for (auto it = traj.end() - nPointsInBackFrom; it != traj.end() - 1; ++it)
-  // {
-  //   std::vector<double> start;
-  //   it->get()->getNominalJointPose(dummy, *robot_model, start);
-  //   std::vector<double> stop;
-  //   (it + 1)->get()->getNominalJointPose(dummy, *robot_model, stop);
-  //   double dt = timeParamiterize(start, stop);
-  //   descartes_core::TimingConstraint tm (0.0, dt);
-  //   (it + 1)->get()->setTiming(tm);
-  // }
+  // Attempt to smooth the velocity of the robot
+  for (auto it = traj.end() - nPointsInBackFrom; it != traj.end() - 1; ++it)
+  {
+    std::vector<double> start;
+    it->get()->getNominalJointPose(dummy, *robot_model, start);
+    std::vector<double> stop;
+    (it + 1)->get()->getNominalJointPose(dummy, *robot_model, stop);
+    double dt = timeParamiterize(start, stop);
+    descartes_core::TimingConstraint tm (0.0, dt);
+    (it + 1)->get()->setTiming(tm);
+  }
 
   // Now translate the solution into ROS trajectory type
   
@@ -303,8 +303,8 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
                               res.trajectory_process,
                               res.trajectory_depart);
 
-  moveitSmoothTrajectory(res.trajectory_approach, model);
-  moveitSmoothTrajectory(res.trajectory_depart, model);
+  // moveitSmoothTrajectory(res.trajectory_approach, model);
+  // moveitSmoothTrajectory(res.trajectory_depart, model);
 
   return true;
 }
