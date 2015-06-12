@@ -31,6 +31,11 @@ bool godel_path_execution::PathExecutionService::executionCallback(godel_msgs::T
 
   ROS_INFO_STREAM("PathExecutionService '" << name_ << "': recieved new trajectory (simulate ==" << (req.simulate ? "true" : "false") << ")");
 
+  if (req.trajectory.points.empty()) {
+    ROS_WARN_STREAM("Cannot execute path with no trajectory points. Ignoring");
+    return true;
+  }
+
   if (req.simulate)
   {
     // // Pass the trajectory to the simulation service

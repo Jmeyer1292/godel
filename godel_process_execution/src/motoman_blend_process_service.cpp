@@ -116,8 +116,8 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
   }
 
   // Capture current robot position
-  ros::Duration(1.5).sleep();
-  srv_depart.request.trajectory = insertCurrentPosition(req.trajectory_depart);
+  // ros::Duration(1.5).sleep();
+  // srv_depart.request.trajectory = insertCurrentPosition(req.trajectory_depart);
 
   if (!real_client_.call(srv_depart))
   {
