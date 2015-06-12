@@ -35,6 +35,7 @@ bool godel_process_execution::MotomanBlendProcessExecutionService::executionCall
 
   if (req.simulate)
   {
+    ROS_WARN_STREAM("Sim blend");
     // Pass the trajectory to the simulation service
     trajectory_msgs::JointTrajectory aggregate_traj;
     aggregate_traj = req.trajectory_approach;
@@ -114,6 +115,32 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
     // res.code = srv_process.response.error_code.val;
     return ;
   }
+
+  ////////////////////////////////////
+  // Capture current robot position //
+  ////////////////////////////////////
+  ros::Duration(2.0).sleep();
+  sensor_msgs::JointStateConstPtr state2 = ros::topic::waitForMessage<sensor_msgs::JointState>("joint_states", ros::Duration(1.0));
+  if (!state2) ROS_ERROR_STREAM("Could not capture joints");
+
+  trajectory_msgs::JointTrajectoryPoint pt2;
+  pt2.positions = state2->position;
+  pt2.velocities = dummy;
+  pt2.accelerations = dummy;
+  pt2.effort = dummy;
+  pt2.time_from_start = ros::Duration(0.5);
+  
+  trajectory_msgs::JointTrajectory fixed_traj2;
+  fixed_traj2.joint_names = req.trajectory_depart.joint_names;
+  fixed_traj2.header = req.trajectory_depart.header;
+
+  fixed_traj2.points.push_back(pt2);
+  appendTrajectory(fixed_traj2, req.trajectory_depart);
+  srv_depart.request.trajectory = fixed_traj2;
+
+  //////////////
+  // End hack //
+  //////////////
 
   // Capture current robot position
   // ros::Duration(1.5).sleep();

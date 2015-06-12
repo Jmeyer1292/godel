@@ -1,4 +1,5 @@
 #include "godel_path_planning/trajectory_utils.h"
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
 
 
 // Translates descartes trajectory points to ROS trajectory Ppoints
@@ -7,7 +8,7 @@ void godel_path_planning::populateTrajectoryMsg(const TrajectoryVec& solution,
                                                 trajectory_msgs::JointTrajectory& trajectory)
 {
   typedef std::vector<descartes_core::TrajectoryPtPtr>::const_iterator JointSolutionIterator;
-  const static double DEFAULT_TIME = 0.25;
+  const static double DEFAULT_TIME = 0.05;
   
   ros::Duration time_from_start (0.0);
   for (JointSolutionIterator it = solution.begin(); it != solution.end(); ++it)
@@ -72,4 +73,33 @@ void godel_path_planning::populateProcessTrajectories(const TrajectoryVec& entir
 
   segment.assign(entire_path.begin() + blend_stop_idx, entire_path.end());
   populateTrajectoryMsg(segment, robot_model, depart);
+}
+
+void godel_path_planning::moveitSmoothTrajectory(trajectory_msgs::JointTrajectory& traj, const moveit::core::RobotModelConstPtr& model)
+{
+  using namespace moveit;
+
+  ROS_INFO_STREAM("smoothing trajectory");
+
+  robot_trajectory::RobotTrajectory rt(model, "manipulator");
+  rt.setRobotTrajectoryMsg(moveit::core::RobotState(model), traj);
+  
+  trajectory_processing::IterativeParabolicTimeParameterization iptp;
+  bool success = iptp.computeTimeStamps(rt);
+
+  if (!success) ROS_ERROR_STREAM("Could not time parameterize");
+
+  moveit_msgs::RobotTrajectory moveit_rob_traj;
+  rt.getRobotTrajectoryMsg(moveit_rob_traj);
+
+  traj = moveit_rob_traj.joint_trajectory;
+
+  const double time_ratio = 2.0; 
+  auto f = [time_ratio](trajectory_msgs::JointTrajectoryPoint& pt) {
+    pt.time_from_start *= time_ratio;
+  };
+
+  std::for_each(traj.points.begin(),traj.points.end(), f);
+
+
 }

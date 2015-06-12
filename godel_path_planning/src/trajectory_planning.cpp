@@ -164,6 +164,7 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
   }
 
   size_t nPointsInGoto = 0;
+  size_t nPointsInBackFrom = 0;
 
   if (req.plan_from_current_position)
   {
@@ -188,11 +189,26 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
     {
       to_process[1]->setTiming(descartes_core::TimingConstraint());
     }
+
+
     // Unconstrain the transition from the cartesian motion portion to the tool trajectory
     // which might have much tighter tolerances
     graph_points.front()->setTiming(descartes_core::TimingConstraint(0, 0.5));
     // concatenate paths
     graph_points.insert(graph_points.begin(), to_process.begin(), to_process.end());
+
+
+
+    // BACK FROM motion
+    Eigen::Affine3d last_process_pose;
+    graph_points.back()->getNominalCartPose(std::vector<double>(), *robot_model, last_process_pose);
+
+    TrajectoryVec from_process = interpolateCartesian(last_process_pose, init_pose, 15.0, 0.05);
+    nPointsInBackFrom = from_process.size();
+    from_process.back() = descartes_core::TrajectoryPtPtr(new descartes_trajectory::JointTrajectoryPt(init_state));
+
+    // Insert
+    graph_points.insert(graph_points.end(), from_process.begin(), from_process.end());
   }
 
   // Create planner
@@ -228,7 +244,9 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
     {
       ROS_WARN_STREAM("Adding joint interp for jump");
       auto t = jointInterpolate(start, stop, 10.0, 10);
-      nPointsInGoto += 10;
+      if (std::distance(result_path.begin(), it) < nPointsInGoto) nPointsInGoto += 10;
+      if (std::distance(it, result_path.end()) < nPointsInBackFrom) nPointsInBackFrom += 10;
+
       traj.insert(traj.end(), t.begin(), t.end() );
     }
     else
@@ -249,6 +267,18 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
     (it + 1)->get()->setTiming(tm);
   }
 
+  // // Attempt to smooth the velocity of the robot
+  // for (auto it = traj.end() - nPointsInBackFrom; it != traj.end() - 1; ++it)
+  // {
+  //   std::vector<double> start;
+  //   it->get()->getNominalJointPose(dummy, *robot_model, start);
+  //   std::vector<double> stop;
+  //   (it + 1)->get()->getNominalJointPose(dummy, *robot_model, stop);
+  //   double dt = timeParamiterize(start, stop);
+  //   descartes_core::TimingConstraint tm (0.0, dt);
+  //   (it + 1)->get()->setTiming(tm);
+  // }
+
   // Now translate the solution into ROS trajectory type
   
   // Retrieve active joint names for this planning group
@@ -268,10 +298,13 @@ bool godel_path_planning::generateTrajectory(const godel_msgs::TrajectoryPlannin
   // populateTrajectoryMsg(traj, *robot_model, res.trajectory_process);
 
   populateProcessTrajectories(traj, *robot_model, req.world_frame, joint_names, 
-                              nPointsInGoto, traj.size(), 
+                              nPointsInGoto, traj.size() - nPointsInBackFrom, 
                               res.trajectory_approach,
                               res.trajectory_process,
                               res.trajectory_depart);
+
+  moveitSmoothTrajectory(res.trajectory_approach, model);
+  moveitSmoothTrajectory(res.trajectory_depart, model);
 
   return true;
 }

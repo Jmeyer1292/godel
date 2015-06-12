@@ -49,6 +49,8 @@ namespace godel_path_planning
                                    trajectory_msgs::JointTrajectory& approach,
                                    trajectory_msgs::JointTrajectory& process,
                                    trajectory_msgs::JointTrajectory& depart);
+
+  void moveitSmoothTrajectory(trajectory_msgs::JointTrajectory& traj, const moveit::core::RobotModelConstPtr& model);
   
 
 }

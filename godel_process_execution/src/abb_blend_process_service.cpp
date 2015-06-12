@@ -82,7 +82,7 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
     std::ofstream fp ("blend.mod");
     if (!fp) ROS_ERROR("PROCESS_PATH_PLANNING: Could not open file");
 
-    rapid_emitter::emitRapidFile(fp, pts, req.trajectory_approach.points.size(), pts.size(), params);
+    rapid_emitter::emitRapidFile(fp, pts, req.trajectory_approach.points.size(), req.trajectory_approach.points.size() + req.trajectory_process.points.size(), params);
     return true;
     
   }
