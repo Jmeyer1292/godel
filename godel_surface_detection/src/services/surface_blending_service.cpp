@@ -6,9 +6,12 @@
 #include <godel_msgs/scan_params_helper.h>
 #include <param_helpers/param_set.h>
 
+// Process Execution
 #include <godel_msgs/BlendProcessExecution.h>
 #include <godel_msgs/KeyenceProcessExecution.h>
-
+// Process Planning
+#include <godel_msgs/BlendProcessPlanning.h>
+#include <godel_msgs/KeyenceProcessPlanning.h>
 
 // topics and services
 const static std::string TRAJECTORY_PLANNING_SERVICE = "trajectory_planner";
@@ -99,7 +102,7 @@ bool SurfaceBlendingService::init()
   visualize_process_path_client_ =
       nh.serviceClient<godel_process_path_generation::VisualizeBlendingPlan>(VISUALIZE_BLENDING_PATH_SERVICE);
 
-  trajectory_planner_client_ = nh.serviceClient<godel_msgs::TrajectoryPlanning>(TRAJECTORY_PLANNING_SERVICE);
+  // trajectory_planner_client_ = nh.serviceClient<godel_msgs::TrajectoryPlanning>(TRAJECTORY_PLANNING_SERVICE);
 
   // trajectory_execution_client_ = nh.serviceClient<godel_msgs::TrajectoryExecution>(PATH_EXECUTION_SERVICE);
   // Read process execution service names
@@ -110,6 +113,9 @@ bool SurfaceBlendingService::init()
   // Process Execution Parameters
   blend_process_client_ = nh.serviceClient<godel_msgs::BlendProcessExecution>(blend_process_service_name);
   scan_process_client_ = nh.serviceClient<godel_msgs::KeyenceProcessExecution>(scan_process_service_name);
+
+  blend_planning_client_ = nh.serviceClient<godel_msgs::BlendProcessPlanning>("blend_process_planning");
+  keyence_planning_client_ = nh.serviceClient<godel_msgs::KeyenceProcessPlanning>("keyence_process_planning");
 
   // service servers
   surf_blend_parameters_server_ = nh.advertiseService(SURFACE_BLENDING_PARAMETERS_SERVICE,

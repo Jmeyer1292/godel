@@ -188,32 +188,6 @@ static inline bool isBlendingPath(const std::string& name)
   return name.find(suffix, name.size()-suffix.length()) != std::string::npos;
 }
 
-static godel_msgs::TrajectoryPlanningRequest getBlendTrajectoryRequest()
-{
-  godel_msgs::TrajectoryPlanningRequest request;
-  request.group_name = BLEND_TRAJECTORY_GROUP_NAME;
-  request.tool_frame = BLEND_TRAJECTORY_TOOL_FRAME;
-  request.world_frame = BLEND_TRAJECTORY_WORLD_FRAME;
-  request.angle_discretization = BLEND_TRAJECTORY_ANGLE_DISC;
-  // request.interpoint_delay = BLEND_TRAJECTORY_INTERPOINT_DELAY;
-  request.is_blending_path = true;
-  request.plan_from_current_position = true;
-  return request;
-}
-
-static godel_msgs::TrajectoryPlanningRequest getScanTrajectoryRequest()
-{
-  godel_msgs::TrajectoryPlanningRequest request;
-  request.group_name = SCAN_TRAJECTORY_GROUP_NAME;
-  request.tool_frame = SCAN_TRAJECTORY_TOOL_FRAME;
-  request.world_frame = SCAN_TRAJECTORY_WORLD_FRAME;
-  request.angle_discretization = SCAN_TRAJECTORY_ANGLE_DISC;
-  // request.interpoint_delay = SCAN_TRAJECTORY_INTERPOINT_DELAY;
-  request.is_blending_path = false;
-  request.plan_from_current_position = true;
-  return request;
-}
-
 ProcessPlanResult SurfaceBlendingService::generateProcessPlan(const std::string& name, 
                                                               const visualization_msgs::Marker& path,
                                                               const godel_msgs::BlendingPlanParameters& params, 
@@ -222,30 +196,41 @@ ProcessPlanResult SurfaceBlendingService::generateProcessPlan(const std::string&
   ProcessPlanResult result;
 
   bool is_blending = isBlendingPath(name);
-  godel_msgs::TrajectoryPlanningRequest req = is_blending ? getBlendTrajectoryRequest() : getScanTrajectoryRequest();
-  req.path.reference = path.pose;
-  req.path.points = path.points;
-  req.tcp_speed = is_blending ? params.traverse_spd : scan_params.traverse_spd;
-    
-  ROS_INFO_STREAM("Calling trajectory planner for process: " << name);
-  godel_msgs::TrajectoryPlanningResponse res;
-  if (!trajectory_planner_client_.call(req, res))
+  bool success = false;
+  godel_msgs::ProcessPlan process_plan;
+
+  if (is_blending)
   {
-    ROS_WARN_STREAM("Failed to plan for path: " << name);
-    return result;
+    godel_msgs::BlendProcessPlanning srv;
+    srv.request.path.reference = path.pose;
+    srv.request.path.points = path.points;
+    srv.request.params = params;
+
+    success = blend_planning_client_.call(srv);
+    process_plan = srv.response.plan;
+  }
+  else
+  {
+    godel_msgs::KeyenceProcessPlanning srv;
+    srv.request.path.reference = path.pose;
+    srv.request.path.points = path.points;
+    srv.request.params = scan_params;
+
+    success = keyence_planning_client_.call(srv);
+    process_plan = srv.response.plan;
   }
 
-  ProcessPlanResult::value_type plan;
-  plan.first = name;
+  if (success)
+  {
+    ProcessPlanResult::value_type plan;
+    plan.first = name;
+    plan.second = process_plan;
+    result.plans.push_back(plan);
+  }
+  else
+  {
+    ROS_WARN_STREAM("Failed to plan for: " << name);
+  }
 
-  plan.second.trajectory_approach = res.trajectory_approach;
-  plan.second.trajectory_process = res.trajectory_process;
-  plan.second.trajectory_depart = res.trajectory_depart;
-  
-  if (isBlendingPath(name)) plan.second.type = godel_msgs::ProcessPlan::BLEND_TYPE;
-  else plan.second.type = godel_msgs::ProcessPlan::SCAN_TYPE;
-  
-  result.plans.push_back(plan);
-  
   return result;
 }

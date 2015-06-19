@@ -26,13 +26,15 @@
 #include <godel_msgs/SelectedSurfacesChanged.h>
 #include <godel_msgs/ProcessPlanning.h>
 #include <godel_msgs/SurfaceBlendingParameters.h>
-#include <godel_msgs/TrajectoryPlanning.h>
 #include <godel_msgs/GetAvailableMotionPlans.h>
 #include <godel_msgs/SelectMotionPlan.h>
 #include <godel_msgs/LoadSaveMotionPlan.h>
 #include <godel_msgs/ProcessPlan.h>
 #include <godel_msgs/RenameSurface.h>
 #include <godel_msgs/ScanPlanParameters.h>
+
+#include <godel_msgs/BlendProcessPlanning.h>
+#include <godel_msgs/KeyenceProcessPlanning.h>
 
 #include <godel_process_path_generation/VisualizeBlendingPlan.h>
 #include <godel_process_path_generation/mesh_importer.h>
@@ -175,6 +177,9 @@ private:
   // Services subscribed to by this class
   ros::ServiceClient visualize_process_path_client_;
   ros::ServiceClient trajectory_planner_client_;
+
+  ros::ServiceClient blend_planning_client_;
+  ros::ServiceClient keyence_planning_client_;
 
 
 //  ros::ServiceClient trajectory_execution_client_;

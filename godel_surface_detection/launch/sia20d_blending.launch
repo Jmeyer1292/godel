@@ -57,10 +57,14 @@
 	<node name="polygon_offset_node" pkg="godel_polygon_offset" type="godel_polygon_offset_node" output="screen"/>
 
 	<!-- This node provides services necessary for translating cartesian paths into joint trajectories -->
-	<node name="trajectory_planner_node" pkg="godel_path_planning" type="trajectory_planning_node" output="screen">
-		<param name="ik_plugin" value="motoman_sia20d_descartes/MotomanSia20dRobotModel"/>
+	<!-- <node name="trajectory_planner_node" pkg="godel_path_planning" type="trajectory_planning_node" output="screen"> -->
+		<!-- <param name="ik_plugin" value="motoman_sia20d_descartes/MotomanSia20dRobotModel"/> -->
 		<!-- <param name="ik_plugin" value="descartes_moveit/MoveitStateAdapter"/> -->
-	</node>
+	<!-- </node> -->
+
+	<include file="$(find godel_process_planning)/launch/process_planning.launch">
+		<arg name="ik_plugin" value="motoman_sia20d_descartes/MotomanSia20dRobotModel"/>
+	</include>
 
 	<node name="blend_process_execution" pkg="godel_process_execution" type="motoman_blend_process_service_node" output="screen" />
 	<node name="scan_process_execution" pkg="godel_process_execution" type="keyence_process_service_node" output="screen" />
