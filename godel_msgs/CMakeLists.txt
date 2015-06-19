@@ -47,6 +47,8 @@ add_service_files(
    RenameSurface.srv
    BlendProcessExecution.srv
    KeyenceProcessExecution.srv
+   BlendProcessPlanning.srv
+   KeyenceProcessPlanning.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
