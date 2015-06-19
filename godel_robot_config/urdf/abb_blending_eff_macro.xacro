@@ -28,12 +28,10 @@
 				</material>
 			</visual>
 			<collision>
+				<origin xyz="0 0 0.1"/>
 				<geometry>
-					<mesh filename="package://godel_robot_config/meshes/SWRI_Tool_cf.stl" />
-				</geometry>
-				<material name="another_blue2">
-					<color rgba="0.38 0.54 0.83 1"/>
-				</material>
+          <box size="0.25 0.065 0.04"/>
+        </geometry>
 			</collision>
 		</link>
 

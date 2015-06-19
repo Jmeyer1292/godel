@@ -10,7 +10,7 @@
 
   <xacro:macro name="keyence_lj_v7080" params="prefix">
     <link name="${prefix}base_link">
-      <visual>
+     <!--  <visual>
         <origin xyz="${box_l/-2} 0 0" rpy="0 0 0"/>
         <geometry>
           <box size="${box_l} ${box_w} ${box_h}"/>
@@ -24,7 +24,7 @@
         <geometry>
           <box size="${box_l} ${box_w} ${box_h}"/>
         </geometry>
-      </collision>
+      </collision> -->
     </link>
 
     <link name="${prefix}sensor_aperture_frame" />

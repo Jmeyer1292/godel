@@ -17,7 +17,7 @@
 
     <!-- sensor links -->
     <link name="${prefix}kinect2_frame">
-      <visual>
+      <!-- <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
           <box size="${asus_width} ${asus_length} ${asus_height}"/>
@@ -29,7 +29,7 @@
         <geometry>
           <box size="${asus_width} ${asus_length} ${asus_height}"/>
         </geometry>
-      </collision>
+      </collision> -->
     </link>
 
     <link name="${prefix}kinect2_ir_frame">
