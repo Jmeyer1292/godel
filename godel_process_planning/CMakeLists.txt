@@ -110,7 +110,9 @@ include_directories(
 add_executable(godel_process_planning_node src/godel_process_planning_node.cpp
                                            src/blend_process_planning.cpp
                                            src/keyence_process_planning.cpp
-                                           src/godel_process_planning.cpp)
+                                           src/godel_process_planning.cpp
+                                           src/common_utils.cpp
+                                           src/trajectory_utils.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
