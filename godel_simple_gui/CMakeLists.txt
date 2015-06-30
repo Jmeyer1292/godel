@@ -31,6 +31,10 @@ set(godel_simple_gui_SRCS
  src/states/scanning_state.cpp
  src/states/surface_select_state.cpp
  src/states/planning_state.cpp
+ src/states/wait_to_simulate_state.cpp
+ src/states/simulating_state.cpp
+ src/states/wait_to_execute_state.cpp
+ src/states/executing_state.cpp
 # options
  src/options_submenu.cpp
  src/parameter_window_base.cpp
@@ -48,6 +52,10 @@ set(godel_simple_gui_HDRS
   include/godel_simple_gui/states/scanning_state.h
   include/godel_simple_gui/states/surface_select_state.h
   include/godel_simple_gui/states/planning_state.h
+  include/godel_simple_gui/states/wait_to_simulate_state.h
+  include/godel_simple_gui/states/simulating_state.h
+  include/godel_simple_gui/states/wait_to_execute_state.h
+  include/godel_simple_gui/states/executing_state.h
   # options
   include/godel_simple_gui/options_submenu.h
   include/godel_simple_gui/parameter_window_base.h

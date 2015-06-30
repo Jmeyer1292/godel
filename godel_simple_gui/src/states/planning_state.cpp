@@ -1,5 +1,8 @@
 #include "godel_simple_gui/states/planning_state.h"
+// previous
 #include "godel_simple_gui/states/surface_select_state.h"
+// next
+#include "godel_simple_gui/states/wait_to_simulate_state.h"
 
 #include <ros/console.h>
 #include "godel_simple_gui/blending_widget.h"
@@ -57,7 +60,7 @@ void godel_simple_gui::PlanningState::makeRequest(godel_msgs::BlendingPlanParame
   if (planning_client_.call(srv))
   {
     ROS_INFO_STREAM("Process planning successful");
-    Q_EMIT newStateAvailable( new SurfaceSelectState() );
+    Q_EMIT newStateAvailable( new WaitToSimulateState() );
   }
   else
   {
