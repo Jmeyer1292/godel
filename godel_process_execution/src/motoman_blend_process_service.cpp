@@ -58,7 +58,7 @@ bool godel_process_execution::MotomanBlendProcessExecutionService::executionCall
     // Real execution; if we shouldn't wait, spawn a thread and return this function immediately
     // No way to check for success or failure currently. Need future.
     if (req.wait_for_execution)
-      executeProcess(req);
+      return executeProcess(req);
     else
       boost::thread(&godel_process_execution::MotomanBlendProcessExecutionService::executeProcess, this, req);
     return true;
@@ -68,7 +68,7 @@ bool godel_process_execution::MotomanBlendProcessExecutionService::executionCall
   return false;
 }
 
-void godel_process_execution::MotomanBlendProcessExecutionService::executeProcess(godel_msgs::BlendProcessExecution::Request req)
+bool godel_process_execution::MotomanBlendProcessExecutionService::executeProcess(godel_msgs::BlendProcessExecution::Request req)
 {
   godel_msgs::TrajectoryExecution srv_approach;
   srv_approach.request.wait_for_execution = true;
@@ -85,7 +85,7 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
   if (!real_client_.call(srv_approach))
   {
     // res.code = srv_approach.response.error_code.val;
-    return;
+    return false;
   }
 
   srv_process.request.trajectory = req.trajectory_process;
@@ -93,7 +93,7 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
   if (!real_client_.call(srv_process))
   {
     // res.code = srv_process.response.error_code.val;
-    return ;
+    return false;
   }
 
   srv_depart.request.trajectory = req.trajectory_depart;
@@ -101,6 +101,7 @@ void godel_process_execution::MotomanBlendProcessExecutionService::executeProces
   if (!real_client_.call(srv_depart))
   {
     // res.code = srv_depart.response.error_code.val;
-    return;
+    return false;
   }
+  return true;
 }
