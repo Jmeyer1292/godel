@@ -665,7 +665,7 @@ bool SurfaceBlendingService::selectMotionPlanCallback(godel_msgs::SelectMotionPl
   {
     ROS_WARN_STREAM("Motion plan " << req.name << " does not exist. Cannot execute.");
     res.code = godel_msgs::SelectMotionPlan::Response::ERR_NO_SUCH_NAME;
-    return true;
+    return false;
   }
 
   bool is_blend = trajectory_library_.get()[req.name].type == godel_msgs::ProcessPlan::BLEND_TYPE;
@@ -676,10 +676,14 @@ bool SurfaceBlendingService::selectMotionPlanCallback(godel_msgs::SelectMotionPl
     srv.request.trajectory_approach = trajectory_library_.get()[req.name].trajectory_approach;
     srv.request.trajectory_process = trajectory_library_.get()[req.name].trajectory_process;
     srv.request.trajectory_depart = trajectory_library_.get()[req.name].trajectory_depart;
-    srv.request.wait_for_execution = false;
+    srv.request.wait_for_execution = true;
     srv.request.simulate = req.simulate;
 
-    if (!blend_process_client_.call(srv)) ROS_ERROR_STREAM("Could not call blend process client");
+    if (!blend_process_client_.call(srv))
+    {
+      ROS_ERROR_STREAM("Could not call blend process client");
+      return false;
+    }
   }
   else
   {
@@ -687,10 +691,14 @@ bool SurfaceBlendingService::selectMotionPlanCallback(godel_msgs::SelectMotionPl
     srv.request.trajectory_approach = trajectory_library_.get()[req.name].trajectory_approach;
     srv.request.trajectory_process = trajectory_library_.get()[req.name].trajectory_process;
     srv.request.trajectory_depart = trajectory_library_.get()[req.name].trajectory_depart;
-    srv.request.wait_for_execution = false;
+    srv.request.wait_for_execution = true;
     srv.request.simulate = req.simulate;
 
-    if (!scan_process_client_.call(srv)) ROS_ERROR_STREAM("Could not call scan process client");
+    if (!scan_process_client_.call(srv)) 
+    { 
+      ROS_ERROR_STREAM("Could not call scan process client");
+      return false;
+    }
   }
 
   return true;
