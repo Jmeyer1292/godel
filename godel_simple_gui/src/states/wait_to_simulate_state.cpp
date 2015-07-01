@@ -5,6 +5,8 @@
 #include "godel_simple_gui/states/simulating_state.h"
 // reset state
 #include "godel_simple_gui/states/scan_teach_state.h"
+// error
+#include "godel_simple_gui/states/error_state.h"
 
 #include <ros/console.h>
 #include "godel_simple_gui/blending_widget.h"
@@ -31,6 +33,13 @@ void godel_simple_gui::WaitToSimulateState::onStart(BlendingWidget& gui)
   else
   {
     ROS_WARN_STREAM("Could not fetch plan names");
+  }
+  ROS_WARN_STREAM("Checking plans...");
+  if (plan_names_.empty())
+  {
+    Q_EMIT newStateAvailable( new ErrorState("No motion plans available. "
+                                             "Please check surface selections and try again",
+                              new SurfaceSelectState()) );
   }
 }
 

@@ -84,9 +84,10 @@ void godel_simple_gui::BlendingWidget::changeState(GuiState* new_state)
     delete active_state_;
   }
 
-  new_state->onStart(*this);
   active_state_ = new_state;
   connect(new_state, SIGNAL(newStateAvailable(GuiState*)), this, SLOT(changeState(GuiState*)));
+
+  new_state->onStart(*this);
 }
 
 void godel_simple_gui::BlendingWidget::setButtonsEnabled(bool enabled)
