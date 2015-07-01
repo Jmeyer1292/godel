@@ -3,6 +3,8 @@
 #include "godel_simple_gui/states/wait_to_execute_state.h"
  //next
 //#include "godel_simple_gui/states/wait_to_execute_state.h"
+// error
+#include "godel_simple_gui/states/error_state.h"
 
 #include <ros/console.h>
 #include "godel_simple_gui/blending_widget.h"
@@ -12,6 +14,13 @@
 #include <QtConcurrentRun>
 
 const static std::string SELECT_MOTION_PLAN_SERVICE = "select_motion_plan";
+
+struct BadExecutionError {
+  BadExecutionError(const std::string& what)
+    : what(what)
+  {}
+  std::string what;
+};
 
 godel_simple_gui::ExecutingState::ExecutingState(const std::vector<std::string> &plans)
   : plan_names_(plans)
@@ -51,12 +60,20 @@ void godel_simple_gui::ExecutingState::onReset(BlendingWidget& gui)
 
 void godel_simple_gui::ExecutingState::executeAll()
 {
-  for (std::size_t i = 0; i < plan_names_.size(); ++i)
+  try
   {
-    executeOne(plan_names_[i]);
+    for (std::size_t i = 0; i < plan_names_.size(); ++i)
+    {
+      executeOne(plan_names_[i]);
+    }
+    
+    Q_EMIT newStateAvailable( new WaitToExecuteState(plan_names_) );
   }
-
-  Q_EMIT newStateAvailable( new WaitToExecuteState(plan_names_) );
+  catch (const BadExecutionError& err)
+  {
+    ROS_ERROR_STREAM("There was an error executing a plan " << err.what);
+    Q_EMIT newStateAvailable( new ErrorState(err.what, new WaitToExecuteState(plan_names_)) ); 
+  }
 }
 
 void godel_simple_gui::ExecutingState::executeOne(const std::string &plan)
@@ -67,7 +84,9 @@ void godel_simple_gui::ExecutingState::executeOne(const std::string &plan)
   srv.request.simulate = false;
   if (!real_client_.call(srv))
   {
-    ROS_WARN_STREAM("Client execution request returned false");
+    std::ostringstream ss;
+    ss << "Failed to execute plan: " << plan << ". Please see logs for more details.";
+    throw BadExecutionError(ss.str());
   }
 }
 
