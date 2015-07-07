@@ -80,7 +80,7 @@ bool godel_process_execution::KeyenceProcessExecutionService::executeProcess(god
   if (!keyence_client_.exists())
   {
     ROS_WARN_STREAM("Keyence ROS server is not available on service " << keyence_client_.getService());
-    return false;
+    // return false;
   }
 
   godel_msgs::TrajectoryExecution srv_approach;
@@ -108,7 +108,7 @@ bool godel_process_execution::KeyenceProcessExecutionService::executeProcess(god
   if (!keyence_client_.call(keyence_srv))
   {
     ROS_WARN_STREAM("Could not active keyence");
-    return false;
+    // return false;
   }
 
   srv_process.request.trajectory = req.trajectory_process;
@@ -124,8 +124,8 @@ bool godel_process_execution::KeyenceProcessExecutionService::executeProcess(god
   if (!keyence_client_.call(keyence_srv))
   {
     ROS_WARN_STREAM("Could not de-active keyence");
-    throw std::runtime_error("Could not de-activate the Keyence laser scanner.");
-    return false; // not reachable
+    // throw std::runtime_error("Could not de-activate the Keyence laser scanner.");
+    // return false; // not reachable
   }
 
   srv_depart.request.trajectory = req.trajectory_depart;

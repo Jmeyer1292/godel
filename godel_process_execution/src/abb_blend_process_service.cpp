@@ -6,7 +6,8 @@
 #include <fstream>
 
 #include "process_utils.h"
-#include "rapid_emitter.h"
+#include "rapid_generator/rapid_emitter.h"
+#include "abb_file_suite/ExecuteProgram.h"
 
 godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
@@ -23,6 +24,9 @@ godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecuti
                                 godel_msgs::BlendProcessExecution::Request,
                                 godel_msgs::BlendProcessExecution::Response>
             (name, &godel_process_execution::AbbBlendProcessExecutionService::executionCallback, this);
+
+  real_client_ = nh.serviceClient<abb_file_suite::ExecuteProgram>("execute_program");
+
 }
 
 bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
@@ -61,8 +65,12 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
       {
         values.push_back(aggregate_traj.points[i].positions[j] * 180.0 / M_PI);
       }
-
-      rapid_emitter::TrajectoryPt rapid_point (values);
+      double duration = 0.0;
+      if (i > 0) 
+      {
+        duration = (aggregate_traj.points[i].time_from_start - aggregate_traj.points[i-1].time_from_start).toSec();
+      }
+      rapid_emitter::TrajectoryPt rapid_point (values, duration);
       pts.push_back(rapid_point);
     }
 
@@ -79,14 +87,27 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
     params.slide_force = 0.0;
     params.output_name = "do_PIO_8"; 
     
-    std::ofstream fp ("blend.mod");
+    std::ofstream fp ("/tmp/blend.mod");
     if (!fp) ROS_ERROR("PROCESS_PATH_PLANNING: Could not open file");
 
-    rapid_emitter::emitRapidFile(fp, pts, req.trajectory_approach.points.size(), req.trajectory_approach.points.size() + req.trajectory_process.points.size(), params);
-    return true;
-    
+    rapid_emitter::emitRapidFile(fp, pts, 
+      req.trajectory_approach.points.size(), 
+      req.trajectory_approach.points.size() + req.trajectory_process.points.size(), 
+      params);
+
+    abb_file_suite::ExecuteProgram srv;
+    srv.request.file_path = "/tmp/blend.mod";
+
+    fp.flush();
+    fp.close();
+
+    if (real_client_.call(srv))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
-
-
-  return false;
 }
