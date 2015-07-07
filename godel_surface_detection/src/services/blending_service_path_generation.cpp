@@ -85,11 +85,36 @@ bool SurfaceBlendingService::requestScanPath(const godel_process_path::PolygonBo
 
   PolygonBoundary scan = godel_surface_detection::generateProfilimeterScanPath(boundaries.front(), params);
   utils::translations::godelToVisualizationMsgs(path, scan, std_msgs::ColorRGBA());
+  // Add in an approach and depart vector
+  const geometry_msgs::Point& start_pt = path.points.front();
+  const geometry_msgs::Point& end_pt = path.points.back();
+  // Approach vector
+  const unsigned int N_STEPS = 5;
+  std::vector<geometry_msgs::Point> approach_points;
+  for (std::size_t i = 0; i < N_STEPS; ++i)
+  {
+    geometry_msgs::Point pt = start_pt;
+    pt.z += (N_STEPS - i) * 0.01;
+    approach_points.push_back(pt);
+  }
+  // Depart vector
+  std::vector<geometry_msgs::Point> depart_points;
+  for (std::size_t i = 0; i < N_STEPS; ++i)
+  {
+    geometry_msgs::Point pt = end_pt;
+    pt.z += i * 0.01;
+    depart_points.push_back(pt);
+  }
+  // Insert into path
+  path.points.insert(path.points.end(), depart_points.begin(), depart_points.end());
+  path.points.insert(path.points.begin(), approach_points.begin(), approach_points.end());
+
   path.pose = boundary_pose;
 
   return true;
 }
 
+static unsigned marker_counter = 0;
 ProcessPathResult SurfaceBlendingService::generateProcessPath(const std::string& name, 
                                                               const pcl::PolygonMesh& mesh,
                                                               const godel_msgs::BlendingPlanParameters& blend_params,
@@ -97,7 +122,6 @@ ProcessPathResult SurfaceBlendingService::generateProcessPath(const std::string&
 {
   using godel_process_path::PolygonBoundaryCollection;
   using godel_process_path::PolygonBoundary;
-  process_path_results_.process_paths_.markers.clear();
 
   ProcessPathResult result;
 
@@ -124,12 +148,23 @@ ProcessPathResult SurfaceBlendingService::generateProcessPath(const std::string&
     result.paths.push_back(blend_path_result);
 
     // Hack for visualization sake
-    static unsigned marker_counter = 0;
     blend_path.header.frame_id = "world_frame";
     blend_path.id = marker_counter++;
-    blend_path.lifetime = ros::Duration(0);
-    blend_path.ns = PATH_NAMESPACE;
+    blend_path.header.stamp = ros::Time::now();
+    blend_path.lifetime = ros::Duration(0.0);
+    blend_path.ns = "blend_paths";
     blend_path.pose = boundary_pose;
+    blend_path.action = visualization_msgs::Marker::ADD;
+    blend_path.type = visualization_msgs::Marker::LINE_STRIP;
+    blend_path.scale.x = 0.004;
+    std_msgs::ColorRGBA color;
+    color.r = 1.0;
+    color.b = 0.0;
+    color.g = 0.0;
+    color.a = 1.0;
+    blend_path.colors.clear();
+    blend_path.color = color;
+
     process_path_results_.process_paths_.markers.push_back(blend_path);
   }
   else
@@ -146,6 +181,26 @@ ProcessPathResult SurfaceBlendingService::generateProcessPath(const std::string&
     scan_path_result.first = name + "_scan";
     scan_path_result.second = scan_path;
     result.paths.push_back(scan_path_result);
+
+    // Hack for visualization sake
+    scan_path.header.frame_id = "world_frame";
+    scan_path.header.stamp = ros::Time::now();
+    scan_path.id = marker_counter++;
+    scan_path.lifetime = ros::Duration(0.0);
+    scan_path.ns = "scan_paths";
+    scan_path.pose = boundary_pose;
+    scan_path.action = visualization_msgs::Marker::ADD;
+    scan_path.type = visualization_msgs::Marker::LINE_STRIP;
+    scan_path.scale.x = 0.002;
+    std_msgs::ColorRGBA color;
+    color.r = 1.0;
+    color.b = 0.0;
+    color.g = 1.0;
+    color.a = 0.5;
+    scan_path.colors.clear();
+    scan_path.color = color;
+
+    process_path_results_.scan_paths_.markers.push_back(scan_path);
   }
   else
   {
@@ -164,6 +219,11 @@ godel_surface_detection::TrajectoryLibrary SurfaceBlendingService::generateMotio
   surface_server_.get_selected_list(names);
 
   ROS_ASSERT(names.size() == meshes.size());
+
+  // Marker stuff
+  process_path_results_.process_paths_.markers.clear();
+  process_path_results_.scan_paths_.markers.clear();
+  marker_counter = 0;
 
   godel_surface_detection::TrajectoryLibrary lib;
   for (std::size_t i = 0; i < meshes.size(); ++i)
