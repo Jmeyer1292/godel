@@ -50,7 +50,7 @@ bool godel_path_execution::PathExecutionService::executionCallback(godel_msgs::T
 
   if (req.wait_for_execution)
   {
-    if (ac_.waitForResult(goal.trajectory.points.back().time_from_start + ros::Duration(1.0)))
+    if (ac_.waitForResult(goal.trajectory.points.back().time_from_start + ros::Duration(5.0)))
     {
       return ac_.getState().state_ == ac_.getState().SUCCEEDED;
     }
