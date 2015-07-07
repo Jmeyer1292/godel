@@ -25,6 +25,7 @@ private:
   ros::ServiceClient real_client_;
   ros::ServiceClient sim_client_;
   std::string name_;
+  bool j23_coupled_;
 };
 
 }

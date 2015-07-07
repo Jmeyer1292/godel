@@ -27,10 +27,11 @@ godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecuti
 
   real_client_ = nh.serviceClient<abb_file_suite::ExecuteProgram>("execute_program");
 
+  j23_coupled_ = nh.param<bool>("J23_coupled", false);
 }
 
 bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
-                                                                         godel_msgs::BlendProcessExecution::Response& res)
+                                                                                 godel_msgs::BlendProcessExecution::Response& res)
 {
   using moveit_msgs::ExecuteKnownTrajectory;
   using simulator_service::SimulateTrajectory;
@@ -75,9 +76,12 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
     }
 
     // Correct for 2400 linkage
-    for (std::size_t i = 0; i < pts.size(); ++i)
+    if (j23_coupled_)
     {
-      pts[i].positions_[2] += pts[i].positions_[1];
+      for (std::size_t i = 0; i < pts.size(); ++i)
+      {
+        pts[i].positions_[2] += pts[i].positions_[1];
+      }
     }
 
     rapid_emitter::ProcessParams params;
