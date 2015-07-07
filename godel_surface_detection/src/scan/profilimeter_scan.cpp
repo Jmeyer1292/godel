@@ -55,23 +55,23 @@ namespace
 
     float adjusted_width = slice_width - overlap;
 
-    // Determine which way the slice should go
-    if (bbox.w < bbox.h)
-    {
-      // walk horizontally, vertical slices
-      n_slices = static_cast<int>(bbox.w / (adjusted_width)) + 1;
+    // // Determine which way the slice should go
+    // if (bbox.w < bbox.h)
+    // {
+    //   // walk horizontally, vertical slices
+    //   n_slices = static_cast<int>(bbox.w / (adjusted_width)) + 1;
       
-      dx = std::cos(bbox.a);
-      dy = std::sin(bbox.a);
+    //   dx = std::cos(bbox.a);
+    //   dy = std::sin(bbox.a);
 
-      x = bbox.x - dx * (bbox.w - adjusted_width) / 2.0;
-      y = bbox.y - dy * (bbox.w - adjusted_width) / 2.0;
+    //   x = bbox.x - dx * (bbox.w - adjusted_width) / 2.0;
+    //   y = bbox.y - dy * (bbox.w - adjusted_width) / 2.0;
 
-      w = adjusted_width;
-      h = bbox.h;
-    }
-    else
-    {
+    //   w = adjusted_width;
+    //   h = bbox.h;
+    // }
+    // else
+    // {
       // walk vertically, horizontal slices
       n_slices = static_cast<int>(bbox.h / (adjusted_width)) + 1;
       
@@ -83,7 +83,7 @@ namespace
 
       w = bbox.w;
       h = adjusted_width;
-    }
+    // }
     
     std::vector<RotatedRect> slices;
     slices.reserve(n_slices);
@@ -113,22 +113,24 @@ namespace
     double dx, dy; // 
     float x, y;
     int n;
-    if (rect.w > rect.h)
-    {
+    // if (rect.w > rect.h)
+    // {
+      // ROS_ERROR_STREAM("W > H");
       n = rect.w / ds;
       dx = std::cos(rect.a);
       dy = std::sin(rect.a);
       x = rect.x - dx * rect.w/2.0;
       y = rect.y - dy * rect.w/2.0; 
-    }
-    else
-    {
-      n = rect.h / ds;
-      dx = -std::sin(rect.a);
-      dy = std::cos(rect.a);
-      x = rect.x - dx * rect.h/2.0;
-      y = rect.y - dy * rect.h/2.0;
-    }
+    // }
+    // else
+    // {
+    //   ROS_ERROR_STREAM("H > W");
+    //   n = rect.h / ds;
+    //   dx = -std::sin(rect.a);
+    //   dy = std::cos(rect.a);
+    //   x = rect.x - dx * rect.h/2.0;
+    //   y = rect.y - dy * rect.h/2.0;
+    // }
 
     // pts.reserve(n);
 
