@@ -57,9 +57,13 @@
 	<node name="polygon_offset_node" pkg="godel_polygon_offset" type="godel_polygon_offset_node" output="screen"/>
 
 	<!-- This node provides services necessary for translating cartesian paths into joint trajectories -->
-	<node name="trajectory_planner_node" pkg="godel_path_planning" type="trajectory_planning_node" output="screen">
-		<param name="ik_plugin" value="abb_irb2400_descartes/AbbIrb2400RobotModel"/>
-	</node>
+	<!-- <node name="trajectory_planner_node" pkg="godel_path_planning" type="trajectory_planning_node" output="screen"> -->
+		<!-- <param name="ik_plugin" value="abb_irb2400_descartes/AbbIrb2400RobotModel"/> -->
+	<!-- </node> -->
+
+	<include file="$(find godel_process_planning)/launch/process_planning.launch">
+		<arg name="ik_plugin" value="abb_irb2400_descartes/AbbIrb2400RobotModel"/>
+	</include>
 
 	<!-- This node provides interfaces to trajectory execution for simulated and real robots  -->
 	<node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node" output="screen" />
