@@ -39,6 +39,7 @@ namespace simulator_service
 
       ROS_INFO_STREAM("Handling new simulation service request");
       control_msgs::FollowJointTrajectoryGoal goal;
+
       
 
       // First set the simulator to the initial position of the sim
@@ -48,15 +49,24 @@ namespace simulator_service
       goal.trajectory.points.front().time_from_start = ros::Duration(0.0);
       ac_.sendGoal(goal);
       ac_.waitForResult(ros::Duration(0.5));
+ 
       // Then send the whole trajectory
-      req.trajectory.points.resize(req.trajectory.points.size() - 1);
+      // req.trajectory.points.resize(req.trajectory.points.size() - 1);
       goal.trajectory = req.trajectory;
       ac_.sendGoal(goal);
 
       if (req.wait_for_execution && !goal.trajectory.points.empty())
       {
         ros::Duration wait_time = goal.trajectory.points.back().time_from_start;
-        ac_.waitForResult(wait_time);
+        ROS_WARN_STREAM("Waiting for " << wait_time.toSec() << " seconds");
+        if (ac_.waitForResult(wait_time))
+        {
+          ROS_WARN_STREAM("Action returned true quickly!");
+        }
+      }
+      else
+      {
+        ROS_WARN_STREAM("Something amiss...");
       }
 
       return true;
