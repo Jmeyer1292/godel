@@ -1,6 +1,7 @@
 #include "common_utils.h"
 #include <eigen_conversions/eigen_msg.h>
 #include <descartes_planner/dense_planner.h>
+#include <descartes_planner/sparse_planner.h>
 #include <descartes_trajectory/axial_symmetric_pt.h>
 
 #include <moveit/kinematic_constraints/utils.h>
@@ -122,7 +123,7 @@ godel_process_planning::createLinearPath(const Eigen::Affine3d &start,
     TolerancedFrame frame (pose,
                            ToleranceBase::zeroTolerance<PositionTolerance>(x,y,z),
                            ToleranceBase::createSymmetric<OrientationTolerance>(rx,ry,rz,0,0,M_PI));
-    result.push_back(TrajectoryPtPtr(new CartTrajectoryPt(frame, 0.0, M_PI/6.0)));
+    result.push_back(TrajectoryPtPtr(new CartTrajectoryPt(frame, 0.0, M_PI/12.0)));
   }
 
   return result;
@@ -155,8 +156,8 @@ trajectory_msgs::JointTrajectory godel_process_planning::getMoveitPlan(const std
   moveit_msgs::GetMotionPlan::Request req;
   req.motion_plan_request.group_name = group_name;
   req.motion_plan_request.num_planning_attempts = 20;
-  req.motion_plan_request.max_velocity_scaling_factor = 1.0;
-  req.motion_plan_request.allowed_planning_time = 5.0; // seconds
+  req.motion_plan_request.max_velocity_scaling_factor = 0.1;
+  req.motion_plan_request.allowed_planning_time = 10.0; // seconds
   req.motion_plan_request.planner_id = "";//"RRTConnectkConfigDefault"; // empty -> default
 
   // Workspace params?
@@ -184,6 +185,11 @@ trajectory_msgs::JointTrajectory godel_process_planning::getMoveitPlan(const std
   if (client.call(req, res))
   {
     jt = res.motion_plan_response.trajectory.joint_trajectory;
+  }
+  else
+  {
+    ROS_ERROR_STREAM("Failure to plan?");
+    throw std::runtime_error("Moveit plan failed");
   }
   return jt;
 }
