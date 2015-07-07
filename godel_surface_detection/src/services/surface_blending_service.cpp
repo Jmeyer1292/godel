@@ -579,14 +579,9 @@ bool SurfaceBlendingService::process_path_server_callback(godel_msgs::ProcessPla
   switch(req.action)
   {
     case godel_msgs::ProcessPlanning::Request::GENERATE_MOTION_PLAN:
-      trajectory_library_ = generateMotionLibrary(process_plan.request.params, scan_plan_params_);
-      // res.succeeded = generate_process_plan(process_plan);
-      break;
-
     case godel_msgs::ProcessPlanning::Request::GENERATE_MOTION_PLAN_AND_PREVIEW:
-      remove_previous_process_plan();
       trajectory_library_ = generateMotionLibrary(process_plan.request.params, scan_plan_params_);
-      animate_tool_path();
+      visualizePaths();
       break;
 
     case godel_msgs::ProcessPlanning::Request::PREVIEW_TOOL_PATH:
@@ -749,6 +744,16 @@ bool SurfaceBlendingService::renameSurfaceCallback(godel_msgs::RenameSurface::Re
   }
 }
 
+void SurfaceBlendingService::visualizePaths()
+{
+  visualization_msgs::MarkerArray paths;
+  paths.markers.insert(paths.markers.end(), process_path_results_.process_paths_.markers.begin(),
+                                            process_path_results_.process_paths_.markers.end());
+  paths.markers.insert(paths.markers.end(), process_path_results_.scan_paths_.markers.begin(),
+                                            process_path_results_.scan_paths_.markers.end());
+  tool_path_markers_pub_.publish(paths);
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc,argv,"surface_blending_service");
@@ -764,3 +769,4 @@ int main(int argc, char** argv)
 
   ros::waitForShutdown();
 }
+

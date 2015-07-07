@@ -163,6 +163,8 @@ private:
   bool renameSurfaceCallback(godel_msgs::RenameSurface::Request& req,
                              godel_msgs::RenameSurface::Response& res);
 
+  void visualizePaths();
+
   // Services offered by this class
   ros::ServiceServer surface_detect_server_;
   ros::ServiceServer select_surface_server_;
