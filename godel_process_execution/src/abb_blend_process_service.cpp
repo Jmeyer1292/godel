@@ -27,7 +27,7 @@ godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecuti
 
   real_client_ = nh.serviceClient<abb_file_suite::ExecuteProgram>("execute_program");
 
-  j23_coupled_ = nh.param<bool>("J23_coupled", false);
+  nh.param<bool>("J23_coupled", j23_coupled_, false);
 }
 
 bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
