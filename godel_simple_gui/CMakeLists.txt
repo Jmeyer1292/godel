@@ -42,6 +42,8 @@ set(godel_simple_gui_SRCS
  src/options/pose_widget.cpp
  src/options/robot_scan_configuration.cpp
  src/options/surface_detection_configuration.cpp
+ src/options/blend_tool_configuration.cpp
+ src/options/scan_tool_configuration.cpp
 )
 
 set(godel_simple_gui_HDRS
@@ -64,7 +66,8 @@ set(godel_simple_gui_HDRS
   include/godel_simple_gui/options/pose_widget.h
   include/godel_simple_gui/options/robot_scan_configuration.h
   include/godel_simple_gui/options/surface_detection_configuration.h
-
+  include/godel_simple_gui/options/blend_tool_configuration.h
+  include/godel_simple_gui/options/scan_tool_configuration.h
 )
 
 set(godel_simple_gui_UIS
@@ -73,6 +76,8 @@ set(godel_simple_gui_UIS
  src/uis/pose_widget.ui
  src/uis/robot_scan_configuration.ui
  src/uis/surface_detection_configuration.ui
+ src/uis/blend_tool_configuration.ui
+ src/uis/scan_tool_configuration.ui
 )
 
 set(godel_simple_gui_INCLUDE_DIRECTORIES

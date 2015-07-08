@@ -113,6 +113,8 @@ void godel_simple_gui::BlendingWidget::loadParameters()
     ROS_INFO_STREAM("Successfully fetched blending parameters");
     this->options().setRobotScanParams(srv.response.robot_scan);
     this->options().setSurfaceDetectionParams(srv.response.surface_detection);
+    this->options().setBlendingParams(srv.response.blending_plan);
+    this->options().setScanParams(srv.response.scan_plan);
   }
   else
   {
