@@ -12,12 +12,13 @@ int main(int argc, char** argv)
 
   // Load local parameters
   ros::NodeHandle nh, pnh("~");
-  std::string world_frame = pnh.param<std::string>("world_frame", "world_frame");
-  std::string blend_group = pnh.param<std::string>("blend_group", "manipulator_tcp");
-  std::string keyence_group = pnh.param<std::string>("keyence_group", "manipulator_keyence");
-  std::string blend_tcp = pnh.param<std::string>("blend_tcp", "tcp_frame");
-  std::string keyence_tcp = pnh.param<std::string>("keyence_tcp", "keyence_tcp_frame");
-  std::string ik_plugin = pnh.param<std::string>("ik_plugin", "");
+  std::string world_frame, blend_group, keyence_group, blend_tcp, keyence_tcp, ik_plugin;
+  pnh.param<std::string>("world_frame", world_frame, "world_frame");
+  pnh.param<std::string>("blend_group", blend_group, "manipulator_tcp");
+  pnh.param<std::string>("keyence_group", keyence_group, "manipulator_keyence");
+  pnh.param<std::string>("blend_tcp", blend_tcp, "tcp_frame");
+  pnh.param<std::string>("keyence_tcp", keyence_tcp, "keyence_tcp_frame");
+  pnh.param<std::string>("ik_plugin", ik_plugin, "");
 
   // IK Plugin parameter must be specified
   if (ik_plugin.empty())
