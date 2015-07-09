@@ -5,82 +5,83 @@
 	<xacro:include filename="$(find keyence_ljv_description)/urdf/lj_v7080_macro.xacro"/>
 
 	<!-- parameter list -->
-	<xacro:property name="gripper_length" value="0.218"/>
-	<xacro:property name="gripper_width" value="0.0"/>
-	<xacro:property name="gripper_height" value="0.0"/>
+	<xacro:property name="blend_tcp_x" value="-0.175286"/>
+	<xacro:property name="blend_tcp_y" value="-0.088502"/>
+	<xacro:property name="blend_tcp_z" value="0.056356"/>
 
-	<xacro:property name="TCP_X" value="-0.175286"/>
-	<xacro:property name="TCP_Y" value="-0.088502"/>
-	<xacro:property name="TCP_Z" value="0.056356"/>
+	<xacro:property name="keyence_optical_x" value="0.3016"/>
+	<xacro:property name="keyence_optical_y" value="-0.057"/>
+	<xacro:property name="keyence_optical_z" value="0.088502"/>
+
+	<xacro:property name="kinect_optical_x" value="0.09"/>
+	<xacro:property name="kinect_optical_y" value="-0.065"/>
+	<xacro:property name="kinect_optical_z" value="0.15"/>
 
 	<xacro:macro name="blending_eff_definition" params="prefix eff_adjustment">
 
-			<!-- link definition -->
+		<!-- Link Interface -->
+		<!-- Base link - attach your robot to this link -->
 		<link name="${prefix}eff_frame"/>
+		<!-- Blend tool tip link -->
+		<link name="${prefix}tcp_frame"/>
+		<!-- Camera movement target frame  -->
+		<!-- Keyence laser scanner target frame -->
+		<link name="${prefix}keyence_tcp_frame" />
 
+		<!-- Intermediate Links -->
 		<link name="${prefix}gripper_body">
 			<visual>
 				<geometry>
-					<mesh filename="package://godel_robot_config/meshes/SWRI_Tool_cf.stl" />
+					<mesh filename="package://godel_robot_config/meshes/visual/blending_eff.stl" />
 				</geometry>
-				<material name="silver">
-					<color rgba="0.8 0.8 0.8 1"/>
+				<material name="grey">
+					<color rgba="0.5 0.5 0.5 1.0"/>
 				</material>
 			</visual>
 			<collision>
-				<origin xyz="0 0 0.1"/>
 				<geometry>
-          <box size="0.25 0.065 0.04"/>
+          <!-- <mesh filename="package://godel_robot_config/meshes/visual/blending_eff.stl" /> -->
+          <cylinder length="0.01" radius="0.01"/>
         </geometry>
 			</collision>
 		</link>
 
-		<link name="${prefix}tcp_frame"/>
 		<link name="${prefix}kinect2_mount"/>
-		<link name="${prefix}keyence_mount"/>
 
 		<xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
 				x_val="0.01468947476802748" y_val="-0.06367377711162475" z_val="-0.01960868079016488" roll="-0.008749106789621127" pitch="-0.03236299096413636" yaw="0.01705034660528017"/>
 
 		<!-- Keyence sensor -->
-		<xacro:keyence_lj_v7080 prefix="${prefix}keyence_" />
+		<link name="${prefix}keyence_sensor_optical_frame"/>
+		<joint name="${prefix}gripper_to_keyence_optical" type="fixed">
+			<parent link="${prefix}gripper_body"/>
+			<child link="${prefix}keyence_sensor_optical_frame"/>
+			<origin xyz="${keyence_optical_x} ${keyence_optical_y} ${keyence_optical_z}" rpy="0 1.5705 3.14159"/>
+		</joint>
 
-		<link name="${prefix}keyence_tcp_frame" />
-		<joint name="${prefix}keyence_to_keyence_tcp_frame" type="fixed">
+		<joint name="${prefix}keyence_optical_to_keyence_tcp" type="fixed">
 			<parent link="${prefix}keyence_sensor_optical_frame"/>
 			<child link="${prefix}keyence_tcp_frame"/>
-			<origin xyz="0.05 0 0" rpy="0 3.14159 0"/>
+			<origin rpy="0 3.14159 0"/>
 		</joint>
 
 		<!-- joint definitions -->
 		<joint name="${prefix}gripper_to_palm" type="fixed">
 			<parent link="${prefix}eff_frame"/>
 			<child link="${prefix}gripper_body"/>
-			<origin xyz="0 0 ${gripper_height * 0.5}" rpy="0 0 0"/>
 		</joint>
 
-		<joint name="${prefix}eff_frame_to_kinect2_mount" type="fixed">
-			<parent link="${prefix}eff_frame"/>
+		<joint name="${prefix}gripper_to_kinect2_mount" type="fixed">
+			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}kinect2_mount"/>
-			<origin xyz="0 0 0.150" rpy="3.14 0 ${2.09+3.141592653589793}"/>
+			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.14159 -1.5705"/>
 		</joint>
 
 		<joint name="${prefix}gripper_to_tcp" type="fixed">
 			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}tcp_frame"/>
-			<origin xyz="${TCP_X} ${TCP_Y} ${TCP_Z}" rpy="0 -1.570796326 0"/>
+			<origin xyz="${blend_tcp_x} ${blend_tcp_y} ${blend_tcp_z}" rpy="0 -1.570796326 0"/>
 		</joint>	
 
-		<joint name="${prefix}gripper_to_keyence_mount" type="fixed">
-			<parent link="${prefix}gripper_body" />
-			<child link="${prefix}keyence_mount"/>
-			<origin xyz="-0.16 0 0.08" rpy="0 1.570796326 0" />
-		</joint>
-
-		<joint name="${prefix}keyence_mount_to_keyence" type="fixed">
-			<parent link="${prefix}keyence_mount"/>
-			<child link="${prefix}keyence_base_link"/>
-			<origin xyz="0 0 0" rpy="0 0 1.570796326"/>
-		</joint>
 	</xacro:macro>
 </robot>

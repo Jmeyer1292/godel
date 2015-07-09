@@ -6,10 +6,8 @@
   
   <!-- property list -->
   <xacro:property name="workcell_height" value="1"/>
-  <xacro:property name="coupler_height" value="0.0"/> <!--"0.087"-->
   <xacro:property name="arm_prefix" value=""/>
-    
-  <xacro:property name="no_go_height" value="0.1"/>
+  <xacro:property name="no_go_height" value="0.01"/>
 
   <!-- instantiating workcell definitions -->
   <xacro:workcell_zone1_components/>
@@ -23,7 +21,6 @@
   <joint name="link_t_to_eff" type="fixed">
     <parent link="tool0"/>
     <child link="eff_frame"/>
-    <origin xyz="0 ${coupler_height} 0" rpy="0.0 0.0 0.0"/>
   </joint>
 
   <!-- start of arm-workcell joint definitions -->
