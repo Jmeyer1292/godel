@@ -44,9 +44,8 @@
  * your own ROS node.
  *
  */
-
-#ifndef ABB_IRB2600_MANIPULATOR_IKFAST_PLUGIN_HPP
-#define ABB_IRB2600_MANIPULATOR_IKFAST_PLUGIN_HPP 
+#ifndef ABB_IRB2600_MANIPULATOR_IKFAST_MOVEIT_PLUGIN_HPP
+#define ABB_IRB2600_MANIPULATOR_IKFAST_MOVEIT_PLUGIN_HPP
 
 
 #include <ros/ros.h>
@@ -54,16 +53,15 @@
 #include <urdf/model.h>
 #include <tf_conversions/tf_kdl.h>
 
-namespace irb2600_ikfast_manipulator_plugin
-{
-
 // Need a floating point tolerance when checking joint limits, in case the joint starts at limit
 const double LIMIT_TOLERANCE = .0000001;
 /// \brief Search modes for searchPositionIK(), see there
 enum SEARCH_MODE { OPTIMIZE_FREE_JOINT=1, OPTIMIZE_MAX_JOINT=2 };
 
-const static std::string ABB_BASE_LINK = "base_link";
-const static std::string ABB_TOOL_LINK = "tool0";
+namespace irb2600_ikfast_manipulator_plugin
+{
+  const std::string ABB_BASE_LINK = "base_link";
+  const std::string ABB_TIP_LINK= "tool0";
 
 #define IKFAST_NO_MAIN // Don't include main() from IKFast
 
@@ -273,7 +271,7 @@ bool IKFastKinematicsPlugin::initialize(const std::string &robot_description,
                                         const std::string& tip_name,
                                         double search_discretization)
 {
-  setValues(robot_description, group_name, ABB_BASE_LINK, ABB_TOOL_LINK, search_discretization);
+  setValues(robot_description, group_name, ABB_BASE_LINK, ABB_TIP_LINK, search_discretization);
 
   ros::NodeHandle node_handle("~/"+group_name);
 
@@ -968,4 +966,5 @@ bool IKFastKinematicsPlugin::getPositionIK(const geometry_msgs::Pose &ik_pose,
 
 
 } // end namespace
+
 #endif

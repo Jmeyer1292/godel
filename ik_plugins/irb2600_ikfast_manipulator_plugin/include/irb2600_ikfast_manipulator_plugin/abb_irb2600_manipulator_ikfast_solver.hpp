@@ -12,15 +12,14 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 ///
-/// ikfast version 61 generated on 2015-06-18 14:09:01.429790
+/// ikfast version 61 generated on 2015-07-10 14:14:26.221330
 /// To compile with gcc:
 ///     gcc -lstdc++ ik.cpp
 /// To compile without any main function as a shared object (might need -llapack):
 ///     gcc -fPIC -lstdc++ -DIKFAST_NO_MAIN -DIKFAST_CLIBRARY -shared -Wl,-soname,libik.so -o libik.so ik.cpp
 
 #ifndef ABB_IRB2600_MANIPULATOR_IKFAST_SOLVER_HPP
-#define ABB_IRB2600_MANIPULATOR_IKFAST_SOLVER_HPP 
-
+#define ABB_IRB2600_MANIPULATOR_IKFAST_SOLVER_HPP
 
 #define IKFAST_HAS_LIBRARY
 #include "ikfast.h" // found inside share/openrave-X.Y/python/ikfast.h
@@ -2998,7 +2997,7 @@ IKSolver solver;
 return solver.ComputeIk(eetrans,eerot,pfree,solutions);
 }
 
-IKFAST_API const char* GetKinematicsHash() { return "<robot:genericrobot - abb_irb2600 (a6b543b27965ab3761523929629197e9)>"; }
+IKFAST_API const char* GetKinematicsHash() { return "<robot:genericrobot - abb_irb2600 (5e7610a81ab0224ba15a3cd596eda8f8)>"; }
 
 IKFAST_API const char* GetIkFastVersion() { return IKFAST_STRINGIZE(IKFAST_VERSION); }
 
@@ -3052,5 +3051,4 @@ int main(int argc, char** argv)
 }
 
 #endif
-
 #endif
