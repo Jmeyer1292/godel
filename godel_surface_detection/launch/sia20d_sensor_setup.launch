@@ -1,9 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
-  <remap from="/kinect2/depth_highres/points" to="/sensor_point_cloud"/>
-  
+  <remap from="/kinect2/hd/points" to="/sensor_point_cloud"/>
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" >
-    <remap from="/kinect2/depth_lowres/points" to="/sensor_point_cloud"/>
 		<arg name="fps_limit" value="2" />
 	</include>
 

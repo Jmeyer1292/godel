@@ -14,7 +14,6 @@
 		<!-- surface detection service -->
 		<node name="surface_blending_service" pkg="godel_surface_detection" type="surface_blending_service" output="screen">
 			<rosparam command="load" file="$(find godel_surface_detection)/config/irb2600/robot_scan.yaml"/>
-			<rosparam command="load" file="$(find godel_surface_detection)/config/irb2600/surface_detection_live_data.yaml"/>
 			<rosparam command="load" file="$(find godel_surface_detection)/config/irb2600/blending_plan.yaml"/>
 			<rosparam command="load" file="$(find godel_surface_detection)/config/irb2600/surface_detection.yaml"/>
 			<rosparam command="load" file="$(find godel_surface_detection)/config/irb2600/scan_plan.yaml"/>
@@ -56,13 +55,13 @@
 	<node name="process_path_generator_node" pkg="godel_process_path_generation" type="process_path_generator_node" output="screen"/>
 	<node name="polygon_offset_node" pkg="godel_polygon_offset" type="godel_polygon_offset_node" output="screen"/>
 
-	<!-- This node provides services necessary for translating cartesian paths into joint trajectories -->
-	<node name="trajectory_planner_node" pkg="godel_path_planning" type="trajectory_planning_node" output="screen">
-		<param name="ik_plugin" value="abb_irb2600_descartes/AbbIrb2600RobotModel"/>
-	</node>
-
 	<!-- This node provides interfaces to trajectory execution for simulated and real robots  -->
 	<node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node" output="screen" />
+
+	<include file="$(find godel_process_planning)/launch/process_planning.launch">
+		<arg name="ik_plugin" value="abb_irb2600_descartes/AbbIrb2600RobotModel"/>
+	</include>
+
 
 	<!-- Process execution nodes -->
 	<node name="blend_process_execution" pkg="godel_process_execution" type="abb_blend_process_service_node" output="screen" />
