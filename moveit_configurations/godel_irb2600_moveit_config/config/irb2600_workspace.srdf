@@ -27,10 +27,6 @@
     <disable_collisions link1="base_link" link2="link_1" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="no_go_zone" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="table_base1" reason="Adjacent" />
-    <disable_collisions link1="keyence_base_link" link2="kinect2_frame" reason="Adjacent" />
-    <disable_collisions link1="keyence_base_link" link2="link_3" reason="Never" />
-    <disable_collisions link1="keyence_base_link" link2="link_5" reason="Never" />
-    <disable_collisions link1="keyence_base_link" link2="link_6" reason="Adjacent" />
     <disable_collisions link1="kinect2_frame" link2="link_3" reason="Never" />
     <disable_collisions link1="kinect2_frame" link2="link_4" reason="Never" />
     <disable_collisions link1="kinect2_frame" link2="link_5" reason="Never" />
@@ -49,5 +45,6 @@
     <disable_collisions link1="link_4" link2="link_5" reason="Adjacent" />
     <disable_collisions link1="link_4" link2="link_6" reason="Default" />
     <disable_collisions link1="link_5" link2="link_6" reason="Adjacent" />
+    <disable_collisions link1="gripper_body" link2="link_6" reason="Adjacent" />
     <disable_collisions link1="no_go_zone" link2="table_base1" reason="Adjacent" />
 </robot>
