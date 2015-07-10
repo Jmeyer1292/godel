@@ -20,13 +20,13 @@
 
     <!-- sensor links -->
     <link name="${prefix}kinect2_frame">
-      <visual>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
+      <!-- <visual> -->
+       <!--  <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
           <box size="${asus_width} ${asus_length} ${asus_height}"/>
         </geometry>
         <material name="${prefix}dark_silver"/>
-      </visual>
+      </visual> -->
       <!-- <collision>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
