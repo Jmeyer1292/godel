@@ -9,6 +9,48 @@
 #include "rapid_generator/rapid_emitter.h"
 #include "abb_file_suite/ExecuteProgram.h"
 
+// hack
+#include "sensor_msgs/JointState.h"
+#include "ros/topic.h"
+
+static inline bool compare(const std::vector<double>& a, const std::vector<double>& b, double eps = 0.01)
+{
+  if (a.size() != b.size()) {
+    ROS_WARN("Joint configs not the same size");
+    return false;
+  }
+  double diff = 0.0;
+  for (std::size_t i = 0; i < a.size(); ++i) diff += std::abs(a[i] - b[i]);
+
+  return diff < eps;
+} 
+
+static bool waitForExecution(const std::vector<double>& end_goal, const ros::Duration& wait_for, const ros::Duration& time_out)
+{
+  sensor_msgs::JointStateConstPtr state; 
+  ros::Time end_time = ros::Time::now() + time_out;
+  // wait a fixed amount of time
+  wait_for.sleep();
+  ROS_INFO_STREAM("Checking joint positions");
+
+
+  while (ros::Time::now() < end_time)
+  {
+    state = ros::topic::waitForMessage<sensor_msgs::JointState>("/joint_states", ros::Duration(0.0));
+    if (!state)
+    {
+      ROS_WARN("Could not get a joint_state in time");
+      return false;
+    }
+    if (compare(state->position, end_goal))
+    {
+      ROS_INFO("Goal in tolerance. Returning control.");
+      return true;
+    }
+  }
+  return false;
+}
+
 godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecutionService(const std::string& name, 
                                                                           const std::string& sim_name,
                                                                           const std::string& real_name,
@@ -45,7 +87,7 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
   if (req.simulate)
   {
     SimulateTrajectory srv;
-    srv.request.wait_for_execution = false;
+    srv.request.wait_for_execution = req.wait_for_execution;
     srv.request.trajectory = aggregate_traj;
 
     if (!sim_client_.call(srv))
@@ -105,13 +147,13 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
     fp.flush();
     fp.close();
 
-    if (real_client_.call(srv))
-    {
-      return true;
-    }
-    else
+    if (!real_client_.call(srv))
     {
       return false;
     }
+
+    if (!req.wait_for_execution) return true;
+    // If we must wait for execution, let's listen 
+    return waitForExecution(req.trajectory_approach.points.front().positions, ros::Duration(5.0), ros::Duration(60.0));
   }
 }
