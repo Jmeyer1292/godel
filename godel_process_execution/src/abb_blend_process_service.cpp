@@ -70,6 +70,7 @@ godel_process_execution::AbbBlendProcessExecutionService::AbbBlendProcessExecuti
   real_client_ = nh.serviceClient<abb_file_suite::ExecuteProgram>("execute_program");
 
   nh.param<bool>("J23_coupled", j23_coupled_, false);
+  ROS_INFO("ABB Blend Process Execution: Coupled joints = %d", int(j23_coupled_));
 }
 
 bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback(godel_msgs::BlendProcessExecution::Request& req,
@@ -149,6 +150,7 @@ bool godel_process_execution::AbbBlendProcessExecutionService::executionCallback
 
     if (!real_client_.call(srv))
     {
+      ROS_WARN_STREAM("Was not able to FTP new robot path to the controller.");
       return false;
     }
 
