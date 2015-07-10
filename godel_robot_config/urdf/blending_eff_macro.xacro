@@ -38,16 +38,16 @@
 		<link name="${prefix}keyence_mount"/>
 
 		<xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-				x_val="0.01434829753039301" y_val="-0.06323676415307219" z_val="-0.01938774892474541" roll="-0.01029402937163579" pitch="-0.02742921475882609" yaw="0.01025802202749901"/>
+				x_val="0.01342977865645872" y_val="-0.05686282224354644" z_val="-0.01969773723914273" roll="0.01321096089091111" pitch="-0.0264784868525508" yaw="-0.008407104830530813"/>
 
 		<!-- Keyence sensor -->
 		<xacro:keyence_lj_v7080 prefix="${prefix}keyence_" />
 
 		<link name="${prefix}keyence_tcp_frame" />
 		<joint name="${prefix}keyence_to_keyence_tcp_frame" type="fixed">
-			<parent link="${prefix}keyence_sensor_optical_frame"/>
+			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}keyence_tcp_frame"/>
-			<origin xyz="0.05 0 0" rpy="0 3.14159 0"/>
+			<origin xyz="-0.3016 0.028 0.0935" rpy="0 1.57 3.14159"/>
 		</joint>
 
 		<!-- joint definitions -->
@@ -66,7 +66,7 @@
 		<joint name="${prefix}gripper_to_tcp" type="fixed">
 			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}tcp_frame"/>
-			<origin xyz="${gripper_length} 0 ${eff_adjustment}" rpy="0 1.570796326 0"/>
+			<origin xyz="0.2 0 0.05636" rpy="0 1.570796326 0"/>
 		</joint>	
 
 		<joint name="${prefix}gripper_to_keyence_mount" type="fixed">
