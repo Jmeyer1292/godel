@@ -158,7 +158,7 @@ trajectory_msgs::JointTrajectory godel_process_planning::getMoveitPlan(const std
   req.motion_plan_request.num_planning_attempts = 20;
   req.motion_plan_request.max_velocity_scaling_factor = 0.1;
   req.motion_plan_request.allowed_planning_time = 10.0; // seconds
-  req.motion_plan_request.planner_id = "";//"RRTConnectkConfigDefault"; // empty -> default
+  req.motion_plan_request.planner_id = "RRTConnectkConfigDefault"; // empty -> default
 
   // Workspace params?
   req.motion_plan_request.workspace_parameters.header.frame_id = "world_frame";
