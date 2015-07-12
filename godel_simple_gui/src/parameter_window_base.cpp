@@ -1,4 +1,5 @@
 #include "godel_simple_gui/parameter_window_base.h"
+#include <ros/console.h>
 
 void godel_simple_gui::ParameterWindowBase::show()
 {
@@ -8,6 +9,7 @@ void godel_simple_gui::ParameterWindowBase::show()
 
 void godel_simple_gui::ParameterWindowBase::accept_changes_handler()
 {
+  ROS_WARN("Accept button pressed");
   this->update_internal_fields();
   Q_EMIT parameters_changed();
   hide();
@@ -20,6 +22,7 @@ void godel_simple_gui::ParameterWindowBase::cancel_changes_handler()
 
 void godel_simple_gui::ParameterWindowBase::save_changes_handler()
 {
+  ROS_WARN("Save button pressed");
   accept_changes_handler();
   Q_EMIT parameters_save_requested();
 }

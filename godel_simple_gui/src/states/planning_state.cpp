@@ -21,8 +21,7 @@ void godel_simple_gui::PlanningState::onStart(BlendingWidget& gui)
 
   planning_client_ = gui.nodeHandle().serviceClient<godel_msgs::ProcessPlanning>(PROCESS_PATH_SERVICE);
   QtConcurrent::run(this, &PlanningState::makeRequest,
-                          godel_msgs::BlendingPlanParameters(),
-                          godel_msgs::ScanPlanParameters());
+                    gui.options().blendingParams(), gui.options().scanParams());
 }
 
 void godel_simple_gui::PlanningState::onExit(BlendingWidget& gui)
@@ -55,7 +54,7 @@ void godel_simple_gui::PlanningState::makeRequest(godel_msgs::BlendingPlanParame
   srv.request.action = srv.request.GENERATE_MOTION_PLAN_AND_PREVIEW;
   srv.request.params = blend_params;
   srv.request.scan_params = scan_params;
-  srv.request.use_default_parameters = true;
+  srv.request.use_default_parameters = false;
 
   if (planning_client_.call(srv))
   {

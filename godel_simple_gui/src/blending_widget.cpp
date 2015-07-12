@@ -63,7 +63,7 @@ void godel_simple_gui::BlendingWidget::onResetButton()
 
 void godel_simple_gui::BlendingWidget::onOptionsButton()
 {
-  ROS_INFO_STREAM("RESET button pressed");
+  ROS_INFO_STREAM("OPTIONS button pressed");
   options_->show();
 }
 
