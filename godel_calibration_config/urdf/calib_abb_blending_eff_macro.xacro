@@ -76,7 +76,7 @@
 		<joint name="${prefix}gripper_to_kinect2_mount" type="fixed">
 			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}kinect2_mount"/>
-			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 1.5707963267948966"/>
+			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 -1.5707963267948966"/>
 		</joint>
 
 		<joint name="${prefix}gripper_to_tcp" type="fixed">

@@ -13,7 +13,7 @@
     <rosparam>
       camera_file: "kinect2_camera_def.yaml"
       target_file: "circles5x5.yaml"
-      cal_job_file: "2400_caljob.yaml"
+      cal_job_file: "2600_caljob.yaml"
       store_results_package_name: "godel_calibration_config"
       store_results_file_name: "cal_results.launch"
     </rosparam>
