@@ -12,7 +12,7 @@
   <xacro:property name="no_go_height" value="0.1"/>
 
   <!-- instantiating workcell definitions -->
-  <xacro:workcell_zone1_components/>
+  <!-- <xacro:workcell_zone1_components/> -->
 
   <!-- instantiating arm  --> 
   <xacro:abb_irb2600 prefix="${arm_prefix}"/>
@@ -37,11 +37,7 @@
      moves with the work objects, we use a no-go-zone to prevent the robot
      from getting too close to the table. Descartes is still unawares, though -->
   <link name="no_go_zone">
-    <collision>
-      <geometry>
-        <box size="0.8 2.220 ${no_go_height}"/>
-      </geometry>
-    </collision>  
+    
   </link>
 
   <joint name="world_to_no_go" type="fixed">

@@ -5,7 +5,8 @@
 	<xacro:include filename="$(find keyence_ljv_description)/urdf/lj_v7080_macro.xacro"/>
 
 	<!-- parameter list -->
-	<xacro:property name="blend_tcp_x" value="-0.180286"/>
+	<!-- -0.18415 -->
+	<xacro:property name="blend_tcp_x" value="-0.18415"/> 
 	<xacro:property name="blend_tcp_y" value="-0.088502"/>
 	<xacro:property name="blend_tcp_z" value="0.056356"/>
 
@@ -39,7 +40,7 @@
 				</material>
 			</visual>
 			<collision>
-				<origin xyz="0 0 0.05"/>
+				<origin xyz="0 0 300.0"/>
 				<geometry>
           <!-- <mesh filename="package://godel_robot_config/meshes/collision/blending_eff.stl" /> -->
           <cylinder length="0.02" radius="0.01"/>
@@ -50,7 +51,7 @@
 		<link name="${prefix}kinect2_mount"/>
 
 		<xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-				x_val="0.02900174412393907" y_val="0.04095818230741284" z_val="-0.01883104837032643" roll="-0.01098684541346244" pitch="0.03293993758199074" yaw="0.008473303411297784"/>
+				x_val="0.04820261546730869" y_val="-0.01114874709948466" z_val="-0.02950381228410577" roll="0.007508267029451446" pitch="-0.02318953773117859" yaw="-0.01522249965961855"/>
 
 		<!-- Keyence sensor -->
 		<link name="${prefix}keyence_sensor_optical_frame"/>
@@ -75,7 +76,7 @@
 		<joint name="${prefix}gripper_to_kinect2_mount" type="fixed">
 			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}kinect2_mount"/>
-			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 1.5707963267948966"/>
+			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 -1.5707963267948966"/>
 		</joint>
 
 		<joint name="${prefix}gripper_to_tcp" type="fixed">
