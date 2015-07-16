@@ -16,11 +16,11 @@ namespace godel_process_planning
  * @param pose
  * @return
  */
-static inline descartes_core::TrajectoryPtPtr toDescartesPt(const Eigen::Affine3d& pose)
+static inline descartes_core::TrajectoryPtPtr toDescartesPt(const Eigen::Affine3d& pose, double dt)
 {
   using namespace descartes_trajectory;
   using namespace descartes_core;
-  const static descartes_core::TimingConstraint tm (0.15);
+  const descartes_core::TimingConstraint tm (dt);
 
   Eigen::Vector3d rpy = pose.rotation().eulerAngles(0,1,2);
   Eigen::Vector3d xyz = pose.translation();
@@ -42,14 +42,21 @@ static inline descartes_core::TrajectoryPtPtr toDescartesPt(const Eigen::Affine3
  * @return
  */
 static godel_process_planning::DescartesTraj toDescartesTraj(const geometry_msgs::Pose& ref,
-                                                             const std::vector<geometry_msgs::Point>& points)
+                                                             const std::vector<geometry_msgs::Point>& points,
+                                                             const godel_msgs::ScanPlanParameters& params)
 {
   DescartesTraj traj;
   traj.reserve(points.size());
+  if (points.empty()) return traj;
+
+  Eigen::Affine3d last_pose = createNominalTransform(ref, points.front());
 
   for (std::size_t i = 0; i < points.size(); ++i)
   {
-    traj.push_back( toDescartesPt(createNominalTransform(ref, points[i])) );
+    Eigen::Affine3d this_pose = createNominalTransform(ref, points[i]);
+    double dt = (this_pose.translation() - last_pose.translation()).norm() / params.traverse_spd;
+    traj.push_back( toDescartesPt(this_pose, dt) );
+    last_pose = this_pose;
   }
 
   return traj;
@@ -59,7 +66,7 @@ bool ProcessPlanningManager::handleKeyencePlanning(godel_msgs::KeyenceProcessPla
                                                    godel_msgs::KeyenceProcessPlanning::Response& res)
 {
   // Transform process path from geometry msgs to descartes points
-  DescartesTraj process_points = toDescartesTraj(req.path.reference, req.path.points);
+  DescartesTraj process_points = toDescartesTraj(req.path.reference, req.path.points, req.params);
   DescartesTraj solved_path;
   // Capture the current state of the robot
   std::vector<double> current_joints = getCurrentJointState("joint_states");
