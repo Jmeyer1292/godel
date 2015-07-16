@@ -82,6 +82,7 @@ void godel_simple_gui::ExecutingState::executeOne(const std::string &plan)
   godel_msgs::SelectMotionPlan srv;
   srv.request.name = plan;
   srv.request.simulate = false;
+  srv.request.wait_for_execution = true;
   if (!real_client_.call(srv))
   {
     std::ostringstream ss;

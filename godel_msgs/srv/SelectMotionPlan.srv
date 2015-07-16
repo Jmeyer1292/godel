@@ -1,5 +1,6 @@
 string name
 bool simulate
+bool wait_for_execution
 ---
 int32 ERR_NO_SUCH_NAME=-1
 int32 NO_ERR=0 

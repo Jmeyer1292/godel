@@ -65,6 +65,7 @@ void godel_simple_gui::SimulatingState::simulateOne(const std::string &plan)
   godel_msgs::SelectMotionPlan srv;
   srv.request.name = plan;
   srv.request.simulate = true;
+  srv.request.wait_for_execution = true;
   if (!sim_client_.call(srv))
   {
     ROS_WARN_STREAM("Client simulation request returned false");

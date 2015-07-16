@@ -77,6 +77,7 @@ bool SurfaceBlendingService::init()
   default_robot_scan_params__ = robot_scan_.params_;
   default_surf_detection_params_ = surface_detection_.params_;
   default_blending_plan_params_ = blending_plan_params_;
+  default_scan_params_ = scan_plan_params_;
 
   if(surface_detection_.init() && robot_scan_.init() && surface_server_.init())
   {
@@ -576,11 +577,12 @@ bool SurfaceBlendingService::process_path_server_callback(godel_msgs::ProcessPla
 {
   godel_process_path_generation::VisualizeBlendingPlan process_plan;
   process_plan.request.params = req.use_default_parameters ? default_blending_plan_params_: req.params;
+  godel_msgs::ScanPlanParameters scan_params = req.use_default_parameters ? default_scan_params_ : req.scan_params;
   switch(req.action)
   {
     case godel_msgs::ProcessPlanning::Request::GENERATE_MOTION_PLAN:
     case godel_msgs::ProcessPlanning::Request::GENERATE_MOTION_PLAN_AND_PREVIEW:
-      trajectory_library_ = generateMotionLibrary(process_plan.request.params, scan_plan_params_);
+      trajectory_library_ = generateMotionLibrary(process_plan.request.params, scan_params);
       visualizePaths();
       break;
 
@@ -671,7 +673,7 @@ bool SurfaceBlendingService::selectMotionPlanCallback(godel_msgs::SelectMotionPl
     srv.request.trajectory_approach = trajectory_library_.get()[req.name].trajectory_approach;
     srv.request.trajectory_process = trajectory_library_.get()[req.name].trajectory_process;
     srv.request.trajectory_depart = trajectory_library_.get()[req.name].trajectory_depart;
-    srv.request.wait_for_execution = true;
+    srv.request.wait_for_execution = req.wait_for_execution;
     srv.request.simulate = req.simulate;
 
     if (!blend_process_client_.call(srv))
@@ -686,7 +688,7 @@ bool SurfaceBlendingService::selectMotionPlanCallback(godel_msgs::SelectMotionPl
     srv.request.trajectory_approach = trajectory_library_.get()[req.name].trajectory_approach;
     srv.request.trajectory_process = trajectory_library_.get()[req.name].trajectory_process;
     srv.request.trajectory_depart = trajectory_library_.get()[req.name].trajectory_depart;
-    srv.request.wait_for_execution = true;
+    srv.request.wait_for_execution = req.wait_for_execution;
     srv.request.simulate = req.simulate;
 
     if (!scan_process_client_.call(srv)) 
