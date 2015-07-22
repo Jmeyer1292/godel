@@ -5,6 +5,14 @@
 #include <actionlib/client/simple_action_client.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 
+static void scaleDurations(trajectory_msgs::JointTrajectory& traj, double scale)
+{
+  for (std::size_t i = 0; i < traj.points.size(); ++i)
+  {
+    traj.points[i].time_from_start = traj.points[i].time_from_start * scale;
+  }
+}
+
 namespace simulator_service
 {
   class SimulatorService
@@ -40,8 +48,6 @@ namespace simulator_service
       ROS_INFO_STREAM("Handling new simulation service request");
       control_msgs::FollowJointTrajectoryGoal goal;
 
-      
-
       // First set the simulator to the initial position of the sim
       goal.trajectory = req.trajectory;
       goal.trajectory.points.clear();
@@ -53,6 +59,7 @@ namespace simulator_service
       // Then send the whole trajectory
       // req.trajectory.points.resize(req.trajectory.points.size() - 1);
       goal.trajectory = req.trajectory;
+      scaleDurations(goal.trajectory, 0.2);
       ac_.sendGoal(goal);
 
       if (req.wait_for_execution && !goal.trajectory.points.empty())
