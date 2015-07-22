@@ -171,22 +171,31 @@ int RobotScan::scan(bool move_only)
 
 			// filling cartesian poses for next move
 			cartesian_poses.poses.clear();
-			cartesian_poses.poses.push_back(move_group_ptr_->getCurrentPose(params_.tcp_frame).pose);
 			cartesian_poses.poses.push_back(trajectory_poses[i]);
 
-			// getting current robot state
-			robot_state::robotStateToRobotStateMsg(*move_group_ptr_->getCurrentState(),
-					path_plan.start_state_);
+                        move_group_ptr_->setPoseTarget(trajectory_poses[i], params_.tcp_frame);
+
+//			// getting current robot state
+//			robot_state::robotStateToRobotStateMsg(*move_group_ptr_->getCurrentState(),
+//					path_plan.start_state_);
 
 			// creating path plan structure and execute
 			move_group_ptr_->setStartStateToCurrentState();
-			if(move_group_ptr_->computeCartesianPath(cartesian_poses.poses,eef_step,jump_threshold,path_plan.trajectory_,true)>=1.0f)
-			{
-				// apply filter
-				robot_trajectory::RobotTrajectory rt(move_group_ptr_->getCurrentState()->getRobotModel(),move_group_ptr_->getName());
-				rt.setRobotTrajectoryMsg(*move_group_ptr_->getCurrentState(),path_plan.trajectory_);
-				apply_trajectory_parabolic_time_parameterization(rt,path_plan.trajectory_,100,0.01f);
-			}
+
+                        moveit::planning_interface::MoveGroup::Plan my_plan;
+                        bool success = move_group_ptr_->plan(my_plan);
+
+//			if(move_group_ptr_->computeCartesianPath(cartesian_poses.poses,eef_step,jump_threshold,path_plan.trajectory_,true)>=1.0f)
+//			{
+//				// apply filter
+//				robot_trajectory::RobotTrajectory rt(move_group_ptr_->getCurrentState()->getRobotModel(),move_group_ptr_->getName());
+//				rt.setRobotTrajectoryMsg(*move_group_ptr_->getCurrentState(),path_plan.trajectory_);
+//				apply_trajectory_parabolic_time_parameterization(rt,path_plan.trajectory_,100,0.01f);
+//			}
+                        if (success)
+                        {
+
+                        }
 			else
 			{
 				if(params_.stop_on_planning_error)
@@ -202,7 +211,7 @@ int RobotScan::scan(bool move_only)
 
 			}
 
-			if(move_group_ptr_->execute(path_plan)/*move_group_ptr_->move()*/)
+                        if(move_group_ptr_->execute(my_plan)/*move_group_ptr_->move()*/)
 			{
 				poses_reached++;
 
@@ -321,18 +330,18 @@ bool RobotScan::create_scan_trajectory(std::vector<geometry_msgs::Pose> &scan_po
 	move_group_ptr_->setEndEffectorLink(params_.tcp_frame);
 
 	ROS_INFO_STREAM("Computing cartesian path for link '"<<move_group_ptr_->getEndEffectorLink()<<"'");
-	double res = move_group_ptr_->computeCartesianPath(scan_poses,eef_step,jump_threshold,scan_traj,true);
-	double success = res >= params_.reachable_scan_points_ratio;
-	if(success)
-	{
-		ROS_INFO_STREAM("Reachable scan poses percentage "<<res<<" is at or above the acceptance threshold of "<<params_.reachable_scan_points_ratio);
-	}
-	else
-	{
-		ROS_WARN_STREAM("Reachable scan poses percentage "<<res<<" is below the acceptance threshold of "<<params_.reachable_scan_points_ratio);
-	}
+//	double res = move_group_ptr_->computeCartesianPath(scan_poses,eef_step,jump_threshold,scan_traj,true);
+//	double success = res >= params_.reachable_scan_points_ratio;
+//	if(success)
+//	{
+//		ROS_INFO_STREAM("Reachable scan poses percentage "<<res<<" is at or above the acceptance threshold of "<<params_.reachable_scan_points_ratio);
+//	}
+//	else
+//	{
+//		ROS_WARN_STREAM("Reachable scan poses percentage "<<res<<" is below the acceptance threshold of "<<params_.reachable_scan_points_ratio);
+//	}
 
-	return success;
+  return true;
 }
 
 void RobotScan::apply_trajectory_parabolic_time_parameterization(robot_trajectory::RobotTrajectory& rt,

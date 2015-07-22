@@ -35,12 +35,18 @@ namespace
       max_y = std::max(pt.y, max_y); 
     }
 
+
     RotatedRect result;
     result.a = 0.0; // non-rotated, hence the simple bounding box
     result.x = (max_x + min_x) / 2;
     result.y = (max_y + min_y) / 2;
     result.w = max_x - min_x;
     result.h = max_y - min_y;
+
+    // grow region a little
+    result.w *= 1.2;
+    result.h *= 1.2;
+
     return result;
   }
 
