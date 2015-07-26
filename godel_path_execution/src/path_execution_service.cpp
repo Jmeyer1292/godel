@@ -3,6 +3,8 @@
 #include <simulator_service/SimulateTrajectory.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
+const static double EXTRA_WAIT_RATIO = 0.2;
+
 godel_path_execution::PathExecutionService::PathExecutionService(const std::string& name, 
                                                                  const std::string& sim_name,
                                                                  const std::string& real_name,
@@ -50,7 +52,8 @@ bool godel_path_execution::PathExecutionService::executionCallback(godel_msgs::T
 
   if (req.wait_for_execution)
   {
-    if (ac_.waitForResult(goal.trajectory.points.back().time_from_start + ros::Duration(5.0)))
+    ros::Duration extra_wait = goal.trajectory.points.back().time_from_start * EXTRA_WAIT_RATIO;
+    if (ac_.waitForResult(goal.trajectory.points.back().time_from_start + extra_wait))
     {
       return ac_.getState().state_ == ac_.getState().SUCCEEDED;
     }

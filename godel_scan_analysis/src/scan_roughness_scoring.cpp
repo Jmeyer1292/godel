@@ -22,7 +22,7 @@ namespace
   typedef godel_scan_analysis::RoughnessScorer::Cloud Cloud;
   typedef godel_scan_analysis::RoughnessScorer::ColorCloud ColorCloud;
 
-  const static unsigned WINDOW_SIZE = 101;
+  const static unsigned WINDOW_SIZE = 30;
 
   // Preprocess clouds
   static rms::Scan<double> filterCloudAndBuildScan(const Cloud& in)
@@ -43,14 +43,14 @@ namespace
 
   static inline double constrainValue(double min, double max, double val)
   {
-    return val > max ? max : (val < min ? min : val); 
+    return (val > max) ? max : ((val < min) ? min : val); 
   }
 
   // Takes one point and makes a colored pcl point from it
   static pcl::PointXYZRGB makeColoredPoint(const rms::Point<double>& pt, double score)
   {
     // TODO: put these colorization values into the params struct
-    static const double max_score = 0.5e-4;
+    static const double max_score = 0.004;
     static const double min_score = 0.0;
 
     pcl::PointXYZRGB temp;
@@ -86,6 +86,19 @@ namespace
     return rms::scoreAvgAbs<double>(a, b);
   }
 
+  static double localLine(scan_iter a, scan_iter b)
+  {
+      // Calculate relevant sums/means
+    rms::LineFitSums<double> sums = rms::calculateSums<double>(a, b);
+
+    // Fit line
+    rms::LineCoef<double> line = rms::calculateLineCoefs(sums);
+
+    rms::Scan<double> adjusted = rms::adjustWithLine(line, a, b);
+
+    return rms::scoreRms<double>(adjusted.points.begin(), adjusted.points.end());
+  }
+
 } // end anon namespace
 
 
@@ -111,7 +124,7 @@ bool godel_scan_analysis::RoughnessScorer::analyze(const Cloud& in, ColorCloud& 
   rms::Scores scores (score_size, 0.0);
 
   // Apply a surface roughness scoring function
-  rms::kernelOp(adjusted.points.begin(), adjusted.points.begin() + WINDOW_SIZE, adjusted.points.end(), scores.begin(), rmsOp);
+  rms::kernelOp(adjusted.points.begin(), adjusted.points.begin() + WINDOW_SIZE, adjusted.points.end(), scores.begin(), localLine);
   
   // Generate output
   generateColorPoints(scan, scores, out);

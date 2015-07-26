@@ -1,0 +1,245 @@
+---
+reference_frame: world_frame
+scenes:
+-
+     scene_id: 0
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.245202
+        - 0.426975
+        - 0.400123
+        - -2.71036
+        - 0.75757
+        - 1.28079
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 1
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.0950835
+        - 0.395913
+        - 0.445226
+        - -2.92957
+        - 0.738939
+        - 1.42792
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 2
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.495128
+        - 0.552451
+        - 0.210018
+        - -2.34922
+        - 0.805767
+        - 1.02497
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 3
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.495128
+        - 0.552452
+        - 0.210021
+        - -2.34926
+        - 0.80576
+        - 0.617227
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 4
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.269233
+        - 0.67917
+        - 0.204264
+        - -2.70167
+        - 0.8153
+        - 1.26673
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 5
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.269232
+        - 0.679171
+        - 0.204262
+        - -2.70165
+        - 0.815292
+        - 1.53915
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 6
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.269233
+        - 0.679171
+        - 0.204265
+        - -2.70164
+        - 0.81529
+        - 0.879657
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 7
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.238366
+        - 0.677553
+        - 0.210223
+        - -3.34905
+        - 0.807359
+        - 1.77406
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 8
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.298063
+        - 0.703068
+        - 0.162575
+        - -2.10228
+        - 1.02831
+        - 0.945099
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 9
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.285989
+        - 0.689335
+        - 0.18608
+        - -2.35392
+        - 0.908898
+        - 1.09351
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 10
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.285994
+        - 0.689335
+        - 0.18608
+        - -2.35397
+        - 0.908897
+        - 1.35108
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+-
+     scene_id: 11
+     trigger: ROS_ROBOT_JOINT_VALUES_ACTION_TRIGGER
+     trig_action_server: rosRobotSceneTrigger_joint_values
+     joint_values:
+        - 0.285992
+        - 0.689342
+        - 0.186079
+        - -2.35398
+        - 0.90888
+        - 1.08233
+     observations:
+     -
+          camera: Kinect2
+          target: CircleGrid5x5
+          roi_x_min: 0
+          roi_x_max: 1920
+          roi_y_min: 0
+          roi_y_max: 1080
+          cost_type: LinkCameraCircleTargetReprjErrorPK
+
+optimization_parameters: xx

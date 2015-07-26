@@ -51,7 +51,12 @@
 		<link name="${prefix}kinect2_mount"/>
 
 		<xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-				x_val="0.04820261546730869" y_val="-0.01114874709948466" z_val="-0.02950381228410577" roll="0.007508267029451446" pitch="-0.02318953773117859" yaw="-0.01522249965961855"/>
+				x_val="0.04034282619366366" 
+				y_val="-0.01220757033046958" 
+				z_val="-0.02365034085440264" 
+				roll="0.001680561166170003" 
+				pitch="0.01944455166614176" 
+				yaw="-0.02261820677639799"/>
 
 		<!-- Keyence sensor -->
 		<link name="${prefix}keyence_sensor_optical_frame"/>
