@@ -23,7 +23,20 @@ static inline descartes_core::TrajectoryPtPtr toDescartesPt(const Eigen::Affine3
   using namespace descartes_trajectory;
   using namespace descartes_core;
   const descartes_core::TimingConstraint tm (dt);
-  return TrajectoryPtPtr(new AxialSymmetricPt(pose, M_PI/6.0, AxialSymmetricPt::Z_AXIS, tm)); // default timing
+  return TrajectoryPtPtr(new AxialSymmetricPt(pose, M_PI/12.0, AxialSymmetricPt::Z_AXIS, tm)); // default timing
+}
+
+static inline double costFunction(const std::vector<double>& source,
+                                  const std::vector<double>& target)
+{
+  double cost = 0.0;
+  for (std::size_t i = 0; i < source.size(); ++i)
+  {
+    double diff = std::abs(source[i] - target[i]);
+    if (diff > M_PI_2) cost += 5.0 * diff;
+    else cost += diff;
+  }
+  return cost;
 }
 
 /**
@@ -58,10 +71,29 @@ bool ProcessPlanningManager::handleBlendPlanning(godel_msgs::BlendProcessPlannin
 {
   // Transform process path from geometry msgs to descartes points
   DescartesTraj process_points = toDescartesTraj(req.path.reference, req.path.points, req.params);
-  DescartesTraj solved_path;
+
   // Capture the current state of the robot
   std::vector<double> current_joints = getCurrentJointState("joint_states");
 
+  // First point
+  std::vector<std::vector<double> > start_joint_poses;
+  process_points.front()->getJointPoses(*blend_model_, start_joint_poses);
+  size_t best_index = 0;
+  double best_cost = 100000.0;
+  ROS_WARN("Possible starting poses: %lu", start_joint_poses.size());
+  for (size_t i = 0; i < start_joint_poses.size(); ++i)
+  {
+    double cost = costFunction(start_joint_poses[i], current_joints);
+    if (cost < best_cost)
+    {
+      ROS_WARN("New best cost: %f at %lu", cost, i);
+      best_cost = cost;
+      best_index = i;
+    }
+  }
+
+
+  DescartesTraj solved_path;
   // Current pose
   Eigen::Affine3d init_pose;
   blend_model_->getFK(current_joints, init_pose);
@@ -74,7 +106,7 @@ bool ProcessPlanningManager::handleBlendPlanning(godel_msgs::BlendProcessPlannin
   process_points.back()->getNominalCartPose(std::vector<double>(), *blend_model_, process_stop_pose);
 
   // Create interpolation segment from init position to process path
-  DescartesTraj to_process = createLinearPath(init_pose, process_start_pose);
+  DescartesTraj to_process = createJointPath(current_joints, start_joint_poses[best_index]); //createLinearPath(init_pose, process_start_pose);
   to_process.front() = descartes_core::TrajectoryPtPtr(new descartes_trajectory::JointTrajectoryPt(current_joints));
   // Create interpolation segment from end of process path to init position
   DescartesTraj from_process = createLinearPath(process_stop_pose, init_pose);
