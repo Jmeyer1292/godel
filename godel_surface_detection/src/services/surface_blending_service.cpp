@@ -275,6 +275,7 @@ void SurfaceBlendingService::remove_previous_process_plan()
   // removing boundary markers
   visualization_msgs::MarkerArray &bds = process_path_results_.process_boundaries_;
   visualization_msgs::MarkerArray &paths = process_path_results_.process_paths_;
+  visualization_msgs::MarkerArray &scans = process_path_results_.scan_paths_;
 
   for(std::size_t i = 0; i < bds.markers.size();i++)
   {
@@ -288,15 +289,23 @@ void SurfaceBlendingService::remove_previous_process_plan()
     m.action = m.DELETE;
   }
 
+  for (std::size_t i = 0; i < scans.markers.size(); ++i)
+  {
+    visualization_msgs::Marker &m = scans.markers[i];
+    m.action = m.DELETE;
+  }
+
   // publishing markers for deletion
   visualization_msgs::MarkerArray markers;
   markers.markers.insert(markers.markers.end(),bds.markers.begin(),bds.markers.end());
   markers.markers.insert(markers.markers.end(),paths.markers.begin(),paths.markers.end());
+  markers.markers.insert(markers.markers.end(),scans.markers.begin(),scans.markers.end());
 
   tool_path_markers_pub_.publish(markers);
 
   bds.markers.clear();
   paths.markers.clear();
+  scans.markers.clear();
 
 }
 
@@ -440,6 +449,7 @@ bool SurfaceBlendingService::surface_detection_server_callback(godel_msgs::Surfa
 
   res.surfaces_found = false;
   res.surfaces = visualization_msgs::MarkerArray();
+  remove_previous_process_plan();
 
   switch(req.action)
   {

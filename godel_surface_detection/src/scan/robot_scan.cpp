@@ -233,6 +233,7 @@ int RobotScan::scan(bool move_only)
 			if(!move_only)
 			{
 				// get message
+				ros::Duration(1.0).sleep();
 				sensor_msgs::PointCloud2ConstPtr msg = ros::topic::waitForMessage<sensor_msgs::PointCloud2>(params_.scan_topic,ros::Duration(WAIT_MSG_DURATION));
 				pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ptr(new pcl::PointCloud<pcl::PointXYZ>());
 				tf::StampedTransform source_to_target_tf;

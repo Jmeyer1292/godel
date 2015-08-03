@@ -2,6 +2,8 @@
 #include <ros/ros.h>
 using namespace godel_process_path;
 
+static const double GROWTH_FACTOR = 1.1;
+
 // Local types
 namespace
 {
@@ -44,8 +46,8 @@ namespace
     result.h = max_y - min_y;
 
     // grow region a little
-    result.w *= 1.2;
-    result.h *= 1.2;
+    result.w *= GROWTH_FACTOR;
+    result.h *= GROWTH_FACTOR;
 
     return result;
   }
