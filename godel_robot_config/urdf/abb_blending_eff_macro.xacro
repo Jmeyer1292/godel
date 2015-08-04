@@ -6,12 +6,12 @@
 
 	<!-- parameter list -->
 	<!-- -0.18415 -->
-	<xacro:property name="blend_tcp_x" value="-0.18415"/> 
+	<xacro:property name="blend_tcp_x" value="-0.20615"/> 
 	<xacro:property name="blend_tcp_y" value="-0.088502"/>
 	<xacro:property name="blend_tcp_z" value="0.056356"/>
 
 	<xacro:property name="keyence_optical_x" value="0.3016"/>
-	<xacro:property name="keyence_optical_y" value="-0.057"/>
+	<xacro:property name="keyence_optical_y" value="-0.107"/>
 	<xacro:property name="keyence_optical_z" value="0.088502"/>
 
 	<xacro:property name="kinect_optical_x" value="0.09"/>
@@ -51,23 +51,25 @@
 		<link name="${prefix}kinect2_mount"/>
 
 		<xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-				x_val="0.04034282619366366" 
-				y_val="-0.01220757033046958" 
-				z_val="-0.02365034085440264" 
-				roll="0.001680561166170003" 
-				pitch="0.01944455166614176" 
-				yaw="-0.02261820677639799"/>
+				x_val="0.05759419750806168" y_val="0.02829194357018183" z_val="-0.016785223662519" roll="-0.01140728598935166" pitch="0.02131768425906199" yaw="-0.002586627514245077"/>
 
 		<!-- Keyence sensor -->
+		<link name="${prefix}keyence_base_frame" />
 		<link name="${prefix}keyence_sensor_optical_frame"/>
 		<joint name="${prefix}gripper_to_keyence_optical" type="fixed">
 			<parent link="${prefix}gripper_body"/>
+			<child link="${prefix}keyence_base_frame"/>
+			<origin xyz="${keyence_optical_x} ${keyence_optical_y} ${keyence_optical_z}" rpy="0 -1.5707963267948966 0.0"/>
+		</joint>
+
+		<joint name="${prefix}keyence_base_to_optical" type="fixed">
+			<parent link="${prefix}keyence_base_frame"/>
 			<child link="${prefix}keyence_sensor_optical_frame"/>
-			<origin xyz="${keyence_optical_x} ${keyence_optical_y} ${keyence_optical_z}" rpy="0 1.5707963267948966 3.141592653589793"/>
+			<origin xyz="0 0 0.02"/>
 		</joint>
 
 		<joint name="${prefix}keyence_optical_to_keyence_tcp" type="fixed">
-			<parent link="${prefix}keyence_sensor_optical_frame"/>
+			<parent link="${prefix}keyence_base_frame"/>
 			<child link="${prefix}keyence_tcp_frame"/>
 			<origin rpy="0 3.14159 0"/>
 		</joint>
@@ -81,7 +83,7 @@
 		<joint name="${prefix}gripper_to_kinect2_mount" type="fixed">
 			<parent link="${prefix}gripper_body"/>
 			<child link="${prefix}kinect2_mount"/>
-			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 -1.5707963267948966"/>
+			<origin xyz="${kinect_optical_x} ${kinect_optical_y} ${kinect_optical_z}" rpy="0 3.141592653589793 1.5707963267948966"/>
 		</joint>
 
 		<joint name="${prefix}gripper_to_tcp" type="fixed">

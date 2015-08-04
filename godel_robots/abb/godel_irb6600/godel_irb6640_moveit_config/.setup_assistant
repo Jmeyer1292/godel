@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: godel_irb6600_support
+    relative_path: urdf/irb6600_workspace.xacro
+  SRDF:
+    relative_path: config/irb6640_workspace.srdf
+  CONFIG:
+    generated_timestamp: 1432138755

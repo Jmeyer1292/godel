@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- arguments -->
+  <arg name="sim_robot" default="true"/>
+  <arg name="robot_ip" unless="$(arg sim_robot)" />
+  <arg name="sim_sensor" default="true"/>
+  <arg name="ik_plugin" default="abb_irb2600_descartes/AbbIrb2600RobotModel"/>
+
+  <!-- Launches the primary service for the case of a simulated depth camera -->
+  <node name="surface_blending_service" pkg="godel_surface_detection" type="surface_blending_service">
+    <rosparam command="load" file="$(find godel_irb2600_support)/robot_scan.yaml"/>
+    <rosparam command="load" file="$(find godel_irb2600_support)/blending_plan.yaml"/>
+    <rosparam command="load" file="$(find godel_irb2600_support)/surface_detection.yaml"/>
+    <rosparam command="load" file="$(find godel_irb2600_support)/scan_plan.yaml"/>
+    <param name="publish_region_point_cloud" value="True"/>
+  </node>
+
+  <!-- Launches the primary service for the case of a real depth camera -->
+  <group if="$(arg sim_sensor)">
+    <remap if="$(arg fake_data)" from="generated_cloud" to="sensor_point_cloud"/>
+    <node if="$(arg fake_data)" pkg="godel_surface_detection" type="point_cloud_generator_node" name="point_cloud_generator_node" output="screen">
+      <rosparam command="load" file="$(find godel_irb2600_support)/point_cloud_descriptions.yaml"/>
+    </node>
+  </group>
+
+  <!-- These nodes provide services necessary for the generation of blending paths -->
+  <node name="process_path_generator_node" pkg="godel_process_path_generation" type="process_path_generator_node" output="screen"/>
+  <node name="polygon_offset_node" pkg="godel_polygon_offset" type="godel_polygon_offset_node" output="screen"/>
+
+  <!-- This node provides interfaces to trajectory execution for simulated and real robots  -->
+  <node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node" output="screen" />
+
+  <include file="$(find godel_process_planning)/launch/process_planning.launch">
+    <arg name="ik_plugin" value="abb_irb2600_descartes/AbbIrb2600RobotModel"/>
+  </include>
+
+  <!-- Process execution nodes -->
+  <node name="blend_process_execution" pkg="godel_process_execution" type="abb_blend_process_service_node" output="screen" />
+  <node name="scan_process_execution" pkg="godel_process_execution" type="keyence_process_service_node" output="screen" />
+
+  <!-- Bring up simulated robot that can be visualized under the tf namespace 'simulation'
+       Allows for previewing paths generated before execution. -->
+  <include if="$(arg preview_motion)" file="$(find simulator_service)/launch/simulation.launch"/>
+  
+  <!-- rviz blending plugin -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find godel_irb2600_support)/rviz" output="screen" launch-prefix="nice" required="true"/>
+
+  <!-- Bring up the MoveIt interface to the real or simulated robot -->
+  <include file="$(find godel_irb2600_moveit_config)/launch/moveit_planning_execution.launch">
+    <arg name="rviz" value="false"/>
+    <arg name="sim" value="$(arg sim_robot)"/>
+    <arg name="robot_ip" value="$(arg robot_ip)" unless="$(arg sim_robot)"/>
+  </include>
+
+
+</launch>
