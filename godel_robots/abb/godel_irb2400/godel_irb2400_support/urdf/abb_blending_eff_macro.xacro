@@ -53,12 +53,12 @@
     
     <xacro:unless value="${calibration}">
       <xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-        x_val="0.04034282619366366" 
-        y_val="-0.01220757033046958" 
-        z_val="-0.02365034085440264" 
-        roll="0.001680561166170003" 
-        pitch="0.01944455166614176" 
-        yaw="-0.02261820677639799"/>
+        x_val="-0.057131" 
+        y_val="-0.109731" 
+        z_val="-0.016649" 
+        roll="1.594112" 
+        pitch="0.012460" 
+        yaw="-1.572763"/>
     </xacro:unless>
 
     <joint name="${prefix}gripper_to_keyence_optical" type="fixed">
@@ -88,7 +88,15 @@
       <parent link="${prefix}gripper_body"/>
       <child link="${prefix}tcp_frame"/>
       <origin xyz="${blend_tcp_x} ${blend_tcp_y} ${blend_tcp_z}" rpy="0 -1.5707963267948966 0"/>
-    </joint>  
+    </joint>
+
+    <link name="${prefix}kinect2_move_frame" />
+
+    <joint name="${prefix}kinect2_move_frame_joint" type="fixed">
+      <parent link="${prefix}kinect2_mount"/>
+      <child link="${prefix}kinect2_move_frame"/>
+      <origin rpy="3.14159 0 3.14159" xyz="0 0 0"/>
+    </joint>
 
   </xacro:macro>
 </robot>

@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="package_path"/>
 
   <!-- Launch service which when called will move robot and then indicate scene is ready   -->
   <node pkg="industrial_extrinsic_cal" type="ros_robot_trigger_action_service" name="rosRobotSceneTrigger" output="screen" />
@@ -8,12 +7,12 @@
 <!-- Launch the extrinsic calibration service -->
   <node pkg="industrial_extrinsic_cal" type="service_node" name="calibration_service_node" output="screen" >
     <!-- Look in local package for configuration yaml files -->
-    <param name="yaml_file_path" value="$(arg package_path)"/>
+    <param name="yaml_file_path" value="$(find godel_irb2400_support)/yaml/"/>
     <rosparam>
       camera_file: "kinect2_camera_def.yaml"
       target_file: "circles5x5.yaml"
       cal_job_file: "caljob.yaml"
-      store_results_package_name: "godel_robot_resources"
+      store_results_package_name: "godel_irb2400_support"
       store_results_file_name: "cal_results.launch"
     </rosparam>
   </node>
