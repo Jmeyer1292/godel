@@ -1,0 +1,13 @@
+<launch>
+  <arg name="sim" default="true"/>
+  <arg name="moveit_controller_manager"
+   default="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
+
+
+  <param name="moveit_controller_manager"
+     value="$(arg moveit_controller_manager)"/>
+  
+  <rosparam file="$(find godel_ur5_moveit_config)/config/controllers.yaml"/>
+  <rosparam if="$(arg sim)" file="$(find godel_ur5_moveit_config)/config/sim_controllers.yaml"/>
+
+</launch>

@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: godel_ur5_support
+    relative_path: urdf/ur5_workspace.xacro
+  SRDF:
+    relative_path: config/ur5_workspace.srdf
+  CONFIG:
+    generated_timestamp: 1439843161

@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<robot name="ur5_workspace" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro"/>
+  <xacro:include filename="$(find godel_ur5_support)/urdf/blending_eff_macro.xacro"/>
+  
+  <!-- property list -->
+  <xacro:property name="arm_prefix" value=""/>
+    
+  <xacro:property name="no_go_height" value="0.1"/>
+
+  <link name="world_frame"/>
+
+  <!-- instantiating arm  --> 
+  <xacro:ur5_robot prefix="${arm_prefix}" joint_limited="true"/>
+  <!-- instantiating end effector -->
+  <xacro:blending_eff_definition prefix="${arm_prefix}" calibration="0"/>
+
+  <!-- Connect tool0 to the end effector -->
+  <joint name="link_t_to_eff" type="fixed">
+    <parent link="ee_link"/>
+    <child link="eff_frame"/>
+    <origin xyz="0 0 0" rpy="0.0 1.570796326794896 0.0"/>
+  </joint>
+
+  <!-- Connect the world_frame (defined in workcell components) and the robot -->
+  <joint name="world_to_base" type="fixed">
+    <parent link="world_frame"/>
+    <child link="${arm_prefix}base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
