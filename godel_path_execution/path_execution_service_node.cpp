@@ -7,12 +7,12 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "path_execution_service_node");
 
   ros::NodeHandle nh;
-  ros::NodeHandle pnh ("~");
+
   std::string real_name, sim_name, action_server_name;
 
-  pnh.param<std::string>("action_server_name", action_server_name, "joint_trajectory_action");
-  pnh.param<std::string>("actual_execution_service", real_name, "execute_kinematic_path");
-  pnh.param<std::string>("simulated_execution_service", sim_name, "simulation/simulate");
+  nh.param<std::string>("action_server_name", action_server_name, "joint_trajectory_action");
+  nh.param<std::string>("actual_execution_service", real_name, "execute_kinematic_path");
+  nh.param<std::string>("simulated_execution_service", sim_name, "simulation/simulate");
 
   godel_path_execution::PathExecutionService path_executor("path_execution", sim_name, real_name, action_server_name, nh);
 

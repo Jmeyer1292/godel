@@ -19,7 +19,6 @@
   <!-- <remap from="joint_trajectory_action" to="follow_joint_trajectory"/> -->
   <group if="$(arg sim)">
     <include file="$(find industrial_robot_simulator)/launch/robot_interface_simulator.launch" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
   </group>
 
   <!-- run the "real robot" interface nodes -->
@@ -32,6 +31,7 @@
   </group>
 
   <!-- publish the robot state (tf transforms) -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
   <include file="$(find godel_ur10_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />

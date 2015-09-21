@@ -8,12 +8,11 @@ const static double EXTRA_WAIT_RATIO = 0.2;
 godel_path_execution::PathExecutionService::PathExecutionService(const std::string& name, 
                                                                  const std::string& sim_name,
                                                                  const std::string& real_name,
-                                                                 const std::string& action_name,
+                                                                 const std::string& action_name
                                                                  ros::NodeHandle& nh)
   : name_(name)
   , ac_(action_name, true)
 {
-  ROS_WARN_STREAM("ACTION SERVER: " << action_name);
   ROS_INFO_STREAM("Starting path execution service with name " << name << ". Using simulation service '" 
     << sim_name << "' and actual execution service: '" << real_name << "'.");
   

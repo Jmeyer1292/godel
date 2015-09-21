@@ -53,12 +53,12 @@
     
     <xacro:unless value="${calibration}">
       <xacro:kinect2_sensor_definitions prefix="${prefix}" parent_link="${prefix}kinect2_mount" 
-        x_val="-0.05545147811161651" 
-        y_val="-0.1152017208985462" 
-        z_val="-0.01841335538905632" 
-        roll="1.593839328189698" 
-        pitch="0.009741259273569681" 
-        yaw="-1.573226608465947"/>
+        x_val="-0.04460193007315863" 
+        y_val="-0.122189054626476" 
+        z_val="-0.03422387525807379" 
+        roll="1.596478534124676" 
+        pitch="0.008472408440715973" 
+        yaw="-1.600423757803017"/>
     </xacro:unless>
 
     <joint name="${prefix}gripper_to_keyence_optical" type="fixed">

@@ -21,7 +21,9 @@
   </group>
   
   <!-- Brings up action interface for simple trajectory execution - used by laser scanner process execution -->
-  <node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node"/>
+  <node name="path_execution_service" pkg="godel_path_execution" type="path_execution_service_node" launch-prefix="xterm -e">
+    <param name="action_server_name" value="follow_joint_trajectory"/>
+  </node>
 
   <!-- Launches the blend/scan process planners: requires descartes plugin for the robot model -->
   <include file="$(find godel_process_planning)/launch/process_planning.launch">

@@ -58,7 +58,7 @@
   </node>
 
   <include file="$(find godel_robot_resources)/launch/blending_calibration.launch">
-    <arg name="package_path" value="$(find godel_irb2600_support)/yaml/"/>
+    <arg name="package_path" value="$(find godel_irb2400_support)/yaml/"/>
   </include>
 
 </launch>

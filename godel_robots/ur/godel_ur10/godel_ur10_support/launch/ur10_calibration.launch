@@ -38,6 +38,7 @@
 
   <include file="$(find godel_ur10_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
+    <arg name="sim" value="$(arg sim)"/>
   </include>
 
   <include if="$(arg rviz)" file="$(find godel_ur10_moveit_config)/launch/moveit_rviz.launch">
@@ -58,6 +59,7 @@
     <remap from="joint_states" to="/mutable_joint_states"/>
   </node>
 
+  <remap from="joint_trajectory_action" to="follow_joint_trajectory"/>
   <include file="$(find godel_robot_resources)/launch/blending_calibration.launch">
     <arg name="package_path" value="$(find godel_ur10_support)/yaml/"/>
   </include>
