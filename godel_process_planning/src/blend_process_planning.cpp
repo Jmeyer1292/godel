@@ -17,7 +17,7 @@ namespace godel_process_planning
 
 // Planning Constants
 const double BLENDING_ANGLE_DISCRETIZATION =
-    M_PI / 12.0; // The discretization of the tool's pose about
+    M_PI / 36.0; // The discretization of the tool's pose about
                  // the z axis
 const static std::string JOINT_TOPIC_NAME =
     "joint_states"; // ROS topic to subscribe to for current robot

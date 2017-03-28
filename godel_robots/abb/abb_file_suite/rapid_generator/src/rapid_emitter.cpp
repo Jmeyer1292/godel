@@ -32,6 +32,11 @@ bool rapid_emitter::emitRapidFile(std::ostream& os, const std::vector<Trajectory
   // Turn on the tool
   emitSetOutput(os, params, 1);
 
+  for (std::size_t i = startProcessMotion; i < endProcessMotion; ++i)
+  {
+    os << "p_" << i << ":=CalcRobT(jTarget_" << i << ", tool1);\n";
+  }
+
   // for lengthFreeMotion to end of points, emit grind moves
   for (std::size_t i = startProcessMotion; i < endProcessMotion; ++i)
   {
@@ -95,7 +100,7 @@ bool rapid_emitter::emitGrindMotion(std::ostream& os, const ProcessParams& param
   }
   else
   {
-    os << "MoveL CalcRobT(jTarget_" << n << ",tool1), vProcessSpeed, z40, tool1;\n";
+    os << "MoveL p_" << n << ", vProcessSpeed, z40, tool1;\n";
   }
   return os.good();
 }
@@ -131,6 +136,7 @@ bool rapid_emitter::emitJointPosition(std::ostream& os, const TrajectoryPt& pt, 
   }
   // We assume a six axis robot here.
   os << "],[9E9,9E9,9E9,9E9,9E9,9E9]];\n";
+  os << "VAR robtarget p_" << n << ";\n";
   return true;
 }
 
@@ -157,7 +163,7 @@ bool rapid_emitter::emitProcessDeclarations(std::ostream& os, const ProcessParam
   else
   {
     // Process Speed
-    os << "CONST speeddata vProcessSpeed:=[" << params.tcp_speed << "," << params.tcp_speed
+    os << "CONST speeddata vProcessSpeed:=[" << params.tcp_speed << "," << 500
        << ",50,50];\n";
   }
   // Free motion speed
@@ -182,7 +188,7 @@ bool rapid_emitter::emitJointTrajectoryFile(std::ostream& os,
   }
   // Emit Process Declarations
   emitProcessDeclarations(os, params, 1);
-  // Write beginning of procedure
+  // Write beginning of procedureos << "VAR robtarget p_" << i << ";
   os << "\nPROC Godel_Blend()\n";
   // For 0 to lengthFreeMotion, emit free moves
   if (points.empty())
