@@ -154,9 +154,11 @@ bool SurfaceBlendingService::generateEdgePath(godel_surface_detection::detection
     SS.getBoundaryTrajectory(sorted_boundaries, i, poses);
     poses.resize(poses.size() - 2);
 
+    const static unsigned DECIMATION_FACTOR = 2;
     // Convert eigen poses to geometry poses for messaging and visualization
-    for(const auto& p : poses)
+    for(std::size_t j = 0; j < poses.size(); j += DECIMATION_FACTOR) //const auto& p : poses)
     {
+      const auto& p = poses[j];
       Eigen::Affine3d pose(p.matrix());
       tf::poseEigenToMsg(pose, geo_pose);
       edge_poses.poses.push_back(geo_pose);
