@@ -95,7 +95,7 @@ bool rapid_emitter::emitGrindMotion(std::ostream& os, const ProcessParams& param
   }
   else
   {
-    os << "MoveL CalcRobT(jTarget_" << n << ",tool1), vProcessSpeed, z40, tool1;\n";
+    os << "MoveL CalcRobT(jTarget_" << n << ",tool1), vProcessSpeed, z20, tool1;\n";
   }
   return os.good();
 }
