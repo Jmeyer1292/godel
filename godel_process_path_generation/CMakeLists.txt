@@ -36,7 +36,7 @@ catkin_package(
   INCLUDE_DIRS 
     include
   LIBRARIES 
-    polygon_utils
+    ${PROJECT_NAME}_polygon_utils
   CATKIN_DEPENDS
     roscpp
     pcl_ros
@@ -65,15 +65,15 @@ include_directories(include
 ## Libraries ##
 
 ## Polygon Utilities library
-add_library(polygon_utils
+add_library(${PROJECT_NAME}_polygon_utils
             src/polygon_utils.cpp
 )
-target_link_libraries(polygon_utils
+target_link_libraries(${PROJECT_NAME}_polygon_utils
                       ${catkin_LIBRARIES}
                       ${Eigen_LIBRARIES}
 )
 
-add_dependencies(polygon_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_polygon_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 ## ProcessPath library
@@ -93,7 +93,7 @@ add_library(process_path_generator
 )
 target_link_libraries(process_path_generator
                       process_path
-                      polygon_utils
+                      ${PROJECT_NAME}_polygon_utils
 )
 
 ##_________
@@ -133,5 +133,5 @@ target_link_libraries(test_ProcessPathGenerator
 
 catkin_add_gtest(test_PolygonUtils test/test_polygon_utils.cpp)
 target_link_libraries(test_PolygonUtils
-                      polygon_utils
+                      ${PROJECT_NAME}_polygon_utils
 )
