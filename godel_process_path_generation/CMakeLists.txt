@@ -1,40 +1,55 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(godel_process_path_generation)
-ADD_DEFINITIONS( -std=c++11 )
-
+add_definitions(-std=c++11 )
 
 find_package(catkin REQUIRED COMPONENTS
-             roscpp
-             pcl_ros
-             godel_msgs
-             visualization_msgs
-             tf
-             geometry_msgs
-             message_generation
-             genmsg
-             trajectory_msgs
-             eigen_conversions
-             cmake_modules
-             moveit_core
-             moveit_ros_planning_interface
+  roscpp
+  pcl_ros
+  message_generation
+  godel_msgs
+  visualization_msgs
+  geometry_msgs
+  trajectory_msgs
+  tf
+  eigen_conversions
+  moveit_core
+  moveit_ros_planning_interface
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 ## Generate services in the 'srv' folder
 add_service_files(
-   FILES VisualizeBlendingPlan.srv
+  FILES VisualizeBlendingPlan.srv
 )
 
 # Trajectory msgs needed for building msg in Visualize...srv
-generate_messages(DEPENDENCIES godel_msgs visualization_msgs trajectory_msgs)
-
-catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES polygon_utils
+generate_messages(DEPENDENCIES 
+  geometry_msgs
+  godel_msgs
+  visualization_msgs
+  trajectory_msgs
 )
 
+catkin_package(
+  INCLUDE_DIRS 
+    include
+  LIBRARIES 
+    polygon_utils
+  CATKIN_DEPENDS
+    roscpp
+    pcl_ros
+    message_generation
+    godel_msgs
+    visualization_msgs
+    geometry_msgs
+    trajectory_msgs
+    tf
+    eigen_conversions
+    moveit_core
+    moveit_ros_planning_interface
+)
 
 ###########
 ## Build ##
@@ -57,6 +72,9 @@ target_link_libraries(polygon_utils
                       ${catkin_LIBRARIES}
                       ${Eigen_LIBRARIES}
 )
+
+add_dependencies(polygon_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## ProcessPath library
 add_library(process_path
