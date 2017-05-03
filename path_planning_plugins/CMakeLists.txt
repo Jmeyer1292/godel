@@ -65,7 +65,6 @@ include_directories(${path_planning_plugins_INCLUDE_DIRECTORIES}
 ## DescartesTrajectoryPt lib
 add_library(${PROJECT_NAME}
     ${path_planning_plugins_SRCS}
-    ${path_planning_plugins_HDRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
