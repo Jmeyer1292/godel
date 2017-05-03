@@ -37,7 +37,6 @@ set(path_planning_plugins_HDRS
 
 set(path_planning_plugins_INCLUDE_DIRECTORIES
   include
-  # ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 catkin_package(

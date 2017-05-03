@@ -64,16 +64,6 @@ include_directories(include
 ##_____________
 ## Libraries ##
 
-## Polygon Utilities library
-add_library(${PROJECT_NAME}_polygon_utils
-            src/polygon_utils.cpp
-)
-target_link_libraries(${PROJECT_NAME}_polygon_utils
-                      ${catkin_LIBRARIES}
-                      ${Eigen_LIBRARIES}
-)
-
-add_dependencies(${PROJECT_NAME}_polygon_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 ## ProcessPath library
@@ -86,6 +76,18 @@ target_link_libraries(process_path
                       ${catkin_LIBRARIES}
                       ${Eigen_LIBRARIES}
 )
+
+## Polygon Utilities library
+add_library(${PROJECT_NAME}_polygon_utils
+            src/polygon_utils.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}_polygon_utils
+                      ${catkin_LIBRARIES}
+)
+
+add_dependencies(${PROJECT_NAME}_polygon_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## ProcessPathGenerator library
 add_library(process_path_generator
