@@ -9,18 +9,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
 )
 
-set(meshing_plugins_HDRS
-  include/meshing_plugins_base/meshing_base.h
-)
-
-set(meshing_plugins_INCLUDE_DIRECTORIES
-  include
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
-
 catkin_package(
   INCLUDE_DIRS
-    ${meshing_plugins_INCLUDE_DIRECTORIES}
+    include
   CATKIN_DEPENDS
     pcl_ros
     roscpp
@@ -30,8 +21,9 @@ catkin_package(
 ## Build ##
 ###########
 
-include_directories(${meshing_plugins_INCLUDE_DIRECTORIES}
-                    ${catkin_INCLUDE_DIRS}
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  include
 )
 
 

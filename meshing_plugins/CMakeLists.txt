@@ -20,7 +20,6 @@ set(meshing_plugins_HDRS
 
 set(meshing_plugins_INCLUDE_DIRECTORIES
   include
-  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 catkin_package(
@@ -47,7 +46,6 @@ include_directories(${meshing_plugins_INCLUDE_DIRECTORIES}
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
   ${meshing_plugins_SRCS}
-  ${meshing_plugins_HDRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
