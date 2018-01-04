@@ -20,7 +20,7 @@
   <xacro:property name="blend_tcp_y" value="0"/>
   <xacro:property name="blend_tcp_z" value="0.040"/> <!-- TBD -->
 
-  <xacro:property name="chuck_tcp_x" value="-0.2507"/>
+  <xacro:property name="chuck_tcp_x" value="-0.2377"/>
   <xacro:property name="chuck_tcp_y" value="-0.0035"/>
   <xacro:property name="chuck_tcp_z" value="0.1228"/>
 
@@ -144,6 +144,14 @@
     <link name="${prefix}keyence_sensor_optical_frame"/>  <!--The emitter lens-->
     <link name="${prefix}keyence_tcp_frame"/> <!--The nominal scan location (8cm forward of emitter)-->
 
+    <link name="${prefix}asus_camera_frame"/>
+
+    <joint name="${prefix}keyence_to_asus" type="fixed">
+        <parent link="${prefix}keyence_tcp_frame"/>
+        <child link="${prefix}asus_camera_frame"/>
+        <origin xyz="0.05 0 -0.08" rpy="0 0 ${1.0 * half_pi}"/>
+    </joint>
+
     <joint name="${prefix}bracket_to_keyence_sof" type="fixed">
         <parent link="${prefix}bracket"/>
         <child link="${prefix}keyence_sensor_optical_frame"/>
@@ -170,6 +178,17 @@
       <parent link="${prefix}ensenso_sensor_optical_frame"/>
       <child link="${prefix}kinect2_move_frame"/>
       <origin rpy="0 -${half_pi} 0"/>
+    </joint>
+
+
+    <!-- Calibrated frame -->
+    <link name="${prefix}calibrated_camera_frame"/>
+
+    <joint name="${prefix}tool0_to_color_calibrated_frame" type="fixed">
+      <parent link="${prefix}tool0"/>
+      <child link="${prefix}calibrated_camera_frame"/>
+      <!-- <origin xyz="-0.184162 -0.0248904 0.110391" rpy="-1.5362 0.00212309 1.58653"/> -->
+      <origin xyz="-0.184162 -0.0248904 0.106391" rpy="-1.53521 0.00097496 1.58387"/>
     </joint>
 
   </xacro:macro>

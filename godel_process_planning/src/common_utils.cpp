@@ -22,7 +22,7 @@ const static double DEFAULT_ANGLE_DISCRETIZATION =
                  // in these helper functions
 const static double DEFAULT_JOINT_WAIT_TIME = 5.0; // Maximum time allowed to capture a new joint
                                                    // state message
-const static double DEFAULT_JOINT_VELOCITY = 0.3; // rad/s
+const static double DEFAULT_JOINT_VELOCITY = 0.15; // rad/s
 
 // MoveIt Configuration Constants
 const static int DEFAULT_MOVEIT_NUM_PLANNING_ATTEMPTS = 20;

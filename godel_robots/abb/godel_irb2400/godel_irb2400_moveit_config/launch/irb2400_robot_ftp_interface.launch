@@ -12,7 +12,7 @@
                    (from socket connection to robot) -->
   <node pkg="abb_driver" type="robot_state" name="robot_state"/>
   
-  <node pkg="abb_file_suite" type="ros_abb_ftp_interface_node" name="ftp_interface">
+  <node pkg="abb_file_suite" type="ros_abb_ftp_interface_node" name="ftp_interface" output="screen">
     <param name="controller_ip" value="$(arg robot_ip)"/>
   </node>
   
