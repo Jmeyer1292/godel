@@ -172,7 +172,7 @@ void RobotScan::publish_scan_poses(std::string topic)
 bool RobotScan::move_to_pose(geometry_msgs::Pose& target_pose)
 {
   move_group_ptr_->setPoseTarget(target_pose, params_.tcp_frame);
-  return move_group_ptr_->move();
+  return move_group_ptr_->move().val == moveit_msgs::MoveItErrorCodes::SUCCESS;
 }
 
 int RobotScan::scan(bool move_only)
@@ -223,7 +223,7 @@ int RobotScan::scan(bool move_only)
 //      move_group_ptr_->setPoseTarget(trajectory_poses[i], params_.tcp_frame);
 
       moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-      bool success = move_group_ptr_->plan(my_plan);
+      bool success = move_group_ptr_->plan(my_plan).val == moveit_msgs::MoveItErrorCodes::SUCCESS;
 
       if (!success)
       {
